@@ -3,1516 +3,641 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DDRT v0.0.6.a (v26.06.04.22.55)</title>
+  <title>DDRT v0.0.7.a (v26.06.04.23.09)</title>
   <style>
-    :root {
-      --bg: #f5f7fb;
-      --panel: #ffffff;
-      --panel-2: #f8fafc;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --line: #dbe3ee;
-      --accent: #2563eb;
-      --accent-2: #0f766e;
-      --danger: #dc2626;
-      --warn: #b45309;
-      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      --radius: 18px;
-      --radius-sm: 12px;
-      --bubble: #eef4ff;
-      --bubble-2: #ecfeff;
-    }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    button, input, textarea, select {
-      font: inherit;
-    }
-
-    .app {
-      height: 100dvh;
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 14px;
-      padding: 14px;
-    }
-
-    .sidebar, .main {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      min-height: 0;
-    }
-
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand {
-      padding: 16px 16px 12px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #ffffff, #fbfdff);
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: 1.05rem;
-      line-height: 1.2;
-    }
-
-    .brand p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .sidebar-actions, .topbar, .list-head, .entry-head, .sub-head, .modal-head, .modal-foot {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sidebar-actions {
-      padding: 12px 12px 10px;
-      border-bottom: 1px solid var(--line);
-      flex-wrap: wrap;
-    }
-
-    .icon-btn, .primary-btn, .ghost-btn, .danger-btn, .chip {
-      border: 0;
-      border-radius: 999px;
-      padding: 0;
-      cursor: pointer;
-      transition: transform .12s ease, background .12s ease, opacity .12s ease;
-      user-select: none;
-    }
-
-    .icon-btn:active, .primary-btn:active, .ghost-btn:active, .danger-btn:active, .chip:active {
-      transform: scale(0.98);
-    }
-
-    .icon-btn {
-      width: 42px;
-      height: 42px;
-      display: inline-grid;
-      place-items: center;
-      background: var(--panel-2);
-      border: 1px solid var(--line);
-      color: var(--text);
-      font-size: 1.1rem;
-      flex: 0 0 auto;
-    }
-
-    .primary-btn, .ghost-btn, .danger-btn {
-      padding: 10px 14px;
-      font-weight: 600;
-      border: 1px solid transparent;
-    }
-
-    .primary-btn {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    .ghost-btn {
-      background: var(--panel-2);
-      color: var(--text);
-      border-color: var(--line);
-    }
-
-    .danger-btn {
-      background: #fee2e2;
-      color: var(--danger);
-      border-color: #fecaca;
-    }
-
-    .list-add {
-      margin-left: auto;
-    }
-
-    .list-wrap {
-      padding: 10px;
-      overflow: auto;
-      min-height: 0;
-      flex: 1;
-    }
-
-    .list-item {
-      width: 100%;
-      text-align: left;
-      border: 1px solid transparent;
-      background: transparent;
-      padding: 12px 12px;
-      border-radius: 14px;
-      display: grid;
-      gap: 4px;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
-    .list-item:hover {
-      background: #f8fbff;
-    }
-
-    .list-item.active {
-      background: #eaf2ff;
-      border-color: #cfe0ff;
-    }
-
-    .list-item .title {
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .list-item .meta {
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .topbar {
-      padding: 14px 14px 12px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(180deg, #ffffff, #fbfdff);
-      flex-wrap: wrap;
-    }
-
-    .topbar .title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      margin-right: auto;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .topbar .search {
-      flex: 1 1 220px;
-      min-width: 180px;
-      max-width: 420px;
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: var(--panel-2);
-      outline: none;
-    }
-
-    .content {
-      padding: 14px;
-      overflow: auto;
-      min-height: 0;
-      flex: 1;
-    }
-
-    .empty {
-      height: 100%;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      text-align: center;
-      padding: 24px;
-    }
-
-    .empty .box {
-      max-width: 360px;
-      background: #fff;
-      border: 1px dashed var(--line);
-      border-radius: 18px;
-      padding: 26px;
-      box-shadow: var(--shadow);
-    }
-
-    .entry {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
-      margin-bottom: 14px;
-      overflow: hidden;
-    }
-
-    .entry-head {
-      padding: 14px 14px 10px;
-      align-items: flex-start;
-      gap: 12px;
-      border-bottom: 1px solid #eef2f7;
-      background: linear-gradient(180deg, #fff, #fbfdff);
-    }
-
-    .entry-main {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .entry-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin: 0;
-      font-size: 1.02rem;
-      font-weight: 800;
-    }
-
-    .entry-summary {
-      margin: 8px 0 0;
-      color: #374151;
-      white-space: pre-wrap;
-      line-height: 1.45;
-    }
-
-    .meta-bar {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 8px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.78rem;
-      flex-wrap: wrap;
-    }
-
-    .entry-actions, .sub-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .entry-body {
-      padding: 10px 10px 12px;
-    }
-
-    .sub-list {
-      display: grid;
-      gap: 10px;
-      padding: 4px 4px 0;
-    }
-
-    .sub-item {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    .sub-item.pinned {
-      border-color: #93c5fd;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.08) inset;
-    }
-
-    .sub-head {
-      padding: 10px 12px;
-      background: linear-gradient(180deg, #ffffff, #fbfdff);
-      border-bottom: 1px solid #eef2f7;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .sub-meta {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.76rem;
-      flex-wrap: wrap;
-    }
-
-    .sub-bubble {
-      margin: 12px;
-      padding: 12px 14px;
-      background: var(--bubble);
-      border-radius: 16px;
-      white-space: pre-wrap;
-      line-height: 1.45;
-      border: 1px solid #dbeafe;
-    }
-
-    .sub-item.pinned .sub-bubble {
-      background: var(--bubble-2);
-      border-color: #bbf7d0;
-    }
-
-    .thumbs {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
-      gap: 10px;
-      padding: 0 12px 12px;
-    }
-
-    .thumb {
-      aspect-ratio: 1;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--line);
-      background: #f8fafc;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .thumb .x {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      border: 0;
-      background: rgba(15, 23, 42, 0.72);
-      color: #fff;
-      cursor: pointer;
-      line-height: 1;
-    }
-
-    .sub-footer {
-      padding: 0 12px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .muted { color: var(--muted); }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      display: none;
-      place-items: center;
-      padding: 14px;
-      z-index: 40;
-    }
-
-    .modal-backdrop.show { display: grid; }
-
-    .modal {
-      width: min(720px, 100%);
-      max-height: min(92vh, 900px);
-      overflow: auto;
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
-      border: 1px solid #e5e7eb;
-    }
-
-    .modal-head {
-      padding: 16px 18px;
-      border-bottom: 1px solid var(--line);
-      justify-content: space-between;
-    }
-
-    .modal-head h2 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .modal-body {
-      padding: 16px 18px 18px;
-      display: grid;
-      gap: 14px;
-    }
-
-    .field {
-      display: grid;
-      gap: 8px;
-    }
-
-    .field label {
-      font-weight: 700;
-      font-size: 0.92rem;
-    }
-
-    .field input[type="text"],
-    .field textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px 14px;
-      outline: none;
-      background: #fff;
-      color: var(--text);
-    }
-
-    .field textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    .field input[type="text"]:focus,
-    .field textarea:focus {
-      border-color: #9cc2ff;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
-    }
-
-    .images-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .preview-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
-      gap: 10px;
-    }
-
-    .preview {
-      position: relative;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #f8fafc;
-      aspect-ratio: 1;
-    }
-
-    .preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .preview button {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      border: 0;
-      background: rgba(15, 23, 42, 0.72);
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .modal-foot {
-      padding: 14px 18px 18px;
-      border-top: 1px solid var(--line);
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-
-    .small {
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 16px;
-      transform: translateX(-50%);
-      background: rgba(17, 24, 39, 0.94);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 999px;
-      z-index: 60;
-      display: none;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.22);
-      max-width: calc(100vw - 24px);
-      text-align: center;
-    }
-    .toast.show { display: block; }
-
-    .viewer {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.86);
-      display: none;
-      place-items: center;
-      z-index: 70;
-      padding: 12px;
-    }
-    .viewer.show { display: grid; }
-    .viewer img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 12px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
-      background: #111;
-    }
-    .viewer .close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      border: 0;
-      color: #fff;
-      background: rgba(255,255,255,0.12);
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (max-width: 900px) {
-      .app {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto minmax(0, 1fr);
-        padding: 10px;
-        gap: 10px;
-      }
-
-      .sidebar {
-        order: 1;
-        max-height: 42dvh;
-        position: sticky;
-        top: 10px;
-        z-index: 5;
-      }
-
-      .main {
-        order: 2;
-        min-height: 0;
-      }
-
-      .topbar .title { white-space: normal; }
+    :root{
+      --bg:#f5f7fb; --panel:#fff; --panel-2:#f8fafc; --text:#1f2937; --muted:#6b7280;
+      --line:#dbe3ee; --accent:#2563eb; --danger:#dc2626; --shadow:0 10px 30px rgba(15,23,42,.08);
+      --radius:16px; --bubble:#eef4ff; --bubble-2:#ecfeff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; background:var(--bg); color:var(--text); font:14px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
+    button,input,textarea{font:inherit}
+    .app{height:100dvh; display:grid; grid-template-columns:280px 1fr; gap:10px; padding:10px}
+    .sidebar,.main{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; min-height:0}
+    .sidebar{display:flex; flex-direction:column}
+    .brand{padding:12px 12px 8px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#fbfdff)}
+    .brand h1{margin:0; font-size:.98rem; line-height:1.2}
+    .brand p{margin:4px 0 0; color:var(--muted); font-size:.84rem}
+    .sidebar-actions,.topbar,.entry-head,.sub-head,.modal-head,.modal-foot{display:flex; align-items:center; gap:10px}
+    .sidebar-actions{padding:8px; border-bottom:1px solid var(--line); flex-wrap:wrap}
+    .icon-btn,.primary-btn,.ghost-btn{border:0; border-radius:999px; padding:0; cursor:pointer; transition:transform .12s ease, background .12s ease; user-select:none}
+    .icon-btn:active,.primary-btn:active,.ghost-btn:active{transform:scale(.98)}
+    .icon-btn{width:34px; height:34px; display:inline-grid; place-items:center; background:var(--panel-2); border:1px solid var(--line); color:var(--text); font-size:.98rem; flex:0 0 auto}
+    .primary-btn,.ghost-btn{padding:8px 11px; font-weight:600; border:1px solid transparent}
+    .primary-btn{background:var(--accent); color:#fff}
+    .ghost-btn{background:var(--panel-2); color:var(--text); border-color:var(--line)}
+    .ghost-btn.danger{background:#fee2e2; color:var(--danger); border-color:#fecaca}
+    .list-wrap{padding:8px; overflow:auto; min-height:0; flex:1}
+    .list-item{width:100%; text-align:left; border:1px solid transparent; background:transparent; padding:9px 10px; border-radius:14px; display:grid; gap:4px; cursor:pointer; margin-bottom:8px}
+    .list-item:hover{background:#f8fbff}
+    .list-item.active{background:#eaf2ff; border-color:#cfe0ff}
+    .list-item .title{font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .list-item .meta{color:var(--muted); font-size:.76rem}
+    .main{display:flex; flex-direction:column; min-width:0}
+    .topbar{padding:8px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#fbfdff); flex-wrap:wrap}
+    .topbar .title{font-size:.98rem; font-weight:800; margin-right:auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+    .topbar .search{flex:1 1 150px; min-width:120px; max-width:260px; padding:7px 11px; border-radius:999px; border:1px solid var(--line); background:var(--panel-2); outline:none}
+    .content{padding:10px; overflow:auto; min-height:0; flex:1}
+    .empty{height:100%; display:grid; place-items:center; color:var(--muted); text-align:center; padding:24px}
+    .empty .box{max-width:360px; background:#fff; border:1px dashed var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow)}
+    .entry{background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(15,23,42,.05); margin-bottom:10px; overflow:hidden}
+    .entry-head{padding:10px 10px 8px; align-items:flex-start; gap:12px; border-bottom:1px solid #eef2f7; background:linear-gradient(180deg,#fff,#fbfdff)}
+    .entry-main{flex:1; min-width:0}
+    .entry-title{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:0; font-size:.93rem; font-weight:800}
+    .entry-summary{margin:6px 0 0; color:#374151; white-space:pre-wrap; line-height:1.45}
+    .meta-bar{display:inline-flex; align-items:center; gap:6px; margin-top:6px; padding:5px 8px; border-radius:999px; background:#f8fafc; border:1px solid var(--line); color:var(--muted); font-size:.72rem; flex-wrap:wrap}
+    .entry-actions,.sub-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+    .entry-body{padding:8px 8px 10px}
+    .sub-list{display:grid; gap:8px; padding:4px 4px 0}
+    .sub-item{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff}
+    .sub-item.pinned{border-color:#93c5fd; box-shadow:0 0 0 1px rgba(37,99,235,.08) inset}
+    .sub-head{padding:8px 10px; background:linear-gradient(180deg,#fff,#fbfdff); border-bottom:1px solid #eef2f7; justify-content:space-between; align-items:flex-start}
+    .sub-meta{display:inline-flex; align-items:center; gap:6px; margin-bottom:6px; padding:4px 8px; border-radius:999px; background:#f8fafc; border:1px solid var(--line); color:var(--muted); font-size:.74rem; flex-wrap:wrap}
+    .sub-bubble{margin:10px; padding:10px 12px; background:var(--bubble); border-radius:16px; white-space:pre-wrap; line-height:1.45; border:1px solid #dbeafe}
+    .sub-item.pinned .sub-bubble{background:var(--bubble-2); border-color:#bbf7d0}
+    .thumbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(72px,1fr)); gap:8px; padding:0 12px 12px}
+    .thumb{aspect-ratio:1; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#f8fafc; position:relative; cursor:pointer}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+    .thumb .x{position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:999px; border:0; background:rgba(15,23,42,.72); color:#fff; cursor:pointer; line-height:1}
+    .muted{color:var(--muted)}
+    .modal-backdrop{position:fixed; inset:0; background:rgba(15,23,42,.55); display:none; place-items:center; padding:14px; z-index:40}
+    .modal-backdrop.show{display:grid}
+    .modal{width:min(680px,100%); max-height:min(92vh,900px); overflow:auto; background:#fff; border-radius:24px; box-shadow:0 24px 70px rgba(15,23,42,.28); border:1px solid #e5e7eb}
+    .modal-head{padding:12px 14px; border-bottom:1px solid var(--line); justify-content:space-between}
+    .modal-head h2{margin:0; font-size:1.05rem}
+    .modal-body{padding:12px 14px 14px; display:grid; gap:14px}
+    .field{display:grid; gap:6px}
+    .field label{font-weight:700; font-size:.84rem}
+    .field input[type="text"], .field textarea{width:100%; border:1px solid var(--line); border-radius:12px; padding:9px 11px; outline:none; background:#fff; color:var(--text)}
+    .field textarea{min-height:90px; resize:vertical}
+    .field input[type="text"]:focus, .field textarea:focus{border-color:#9cc2ff; box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+    .images-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+    .preview-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px}
+    .preview{position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#f8fafc; aspect-ratio:1}
+    .preview img{width:100%; height:100%; object-fit:cover; display:block}
+    .preview button{position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:999px; border:0; background:rgba(15,23,42,.72); color:#fff; cursor:pointer}
+    .modal-foot{padding:10px 14px 12px; border-top:1px solid var(--line); justify-content:space-between; flex-wrap:wrap}
+    .small{font-size:.74rem; color:var(--muted)}
+    .toast{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background:rgba(17,24,39,.94); color:#fff; padding:10px 14px; border-radius:999px; z-index:60; display:none; box-shadow:0 12px 30px rgba(0,0,0,.22); max-width:calc(100vw - 24px); text-align:center}
+    .toast.show{display:block}
+    .viewer{position:fixed; inset:0; background:rgba(0,0,0,.86); display:none; place-items:center; z-index:70; padding:12px}
+    .viewer.show{display:grid}
+    .viewer img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 24px 80px rgba(0,0,0,.45); background:#111}
+    .viewer .close{position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:999px; border:0; color:#fff; background:rgba(255,255,255,.12); font-size:1.2rem; cursor:pointer}
+    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
+    @media (max-width:900px){
+      .app{grid-template-columns:1fr; grid-template-rows:auto minmax(0,1fr); padding:8px; gap:8px}
+      .sidebar{order:1; max-height:36dvh; position:sticky; top:8px; z-index:5}
+      .main{order:2; min-height:0}
+      .topbar{gap:6px}
+      .topbar .search{max-width:none}
+      .topbar .title{white-space:normal}
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <h1>Offline Threads Tasks</h1>
-        <p>Lists → entries → sub entries. Stored locally on your device.</p>
-      </div>
-      <div class="sidebar-actions">
-        <button class="icon-btn" id="btnAddList" title="Add list" aria-label="Add list">＋</button>
-        <button class="ghost-btn" id="btnExportAll">Export all</button>
-        <button class="ghost-btn" id="btnExportList">Export list</button>
-        <button class="ghost-btn" id="btnImport">Import</button>
-        <input class="sr-only" type="file" id="importFile" accept="application/json" />
-      </div>
-      <div class="list-wrap" id="listWrap"></div>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <div class="title" id="currentListTitle">No list selected</div>
-        <input class="search" id="searchBox" type="text" placeholder="Search entries and sub entries" />
-        <button class="icon-btn" id="btnAddEntry" title="Add entry" aria-label="Add entry">＋</button>
-        <button class="icon-btn" id="btnEditList" title="Edit current list" aria-label="Edit current list">✎</button>
-        <button class="icon-btn" id="btnDeleteList" title="Delete current list" aria-label="Delete current list">🗑</button>
-      </div>
-      <div class="content" id="content"></div>
-    </main>
-  </div>
-
-  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <h2 id="modalTitle">Modal</h2>
-        <button class="icon-btn" id="modalClose" aria-label="Close">✕</button>
-      </div>
-      <form id="modalForm">
-        <div class="modal-body" id="modalBody"></div>
-        <div class="modal-foot">
-          <div class="small" id="modalHint"></div>
-          <div class="entry-actions">
-            <button class="ghost-btn" type="button" id="modalCancel">Cancel</button>
-            <button class="primary-btn" type="submit" id="modalSave">Save</button>
-          </div>
-        </div>
-      </form>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <h1>Offline Threads Tasks</h1>
+      <p>Lists → entries → sub entries. Stored locally on your device.</p>
     </div>
-  </div>
+    <div class="sidebar-actions">
+      <button class="icon-btn" id="btnAddList" title="Add list" aria-label="Add list">＋</button>
+      <button class="ghost-btn" id="btnExportAll">Export all</button>
+      <button class="ghost-btn" id="btnExportList">Export list</button>
+      <button class="ghost-btn" id="btnImport">Import</button>
+      <input class="sr-only" type="file" id="importFile" accept="application/json" />
+    </div>
+    <div class="list-wrap" id="listWrap"></div>
+  </aside>
 
-  <div class="viewer" id="viewer" aria-hidden="true">
-    <button class="close" id="viewerClose" aria-label="Close image">✕</button>
-    <img id="viewerImg" alt="Preview" />
-  </div>
+  <main class="main">
+    <div class="topbar">
+      <div class="title" id="currentListTitle">No list selected</div>
+      <input class="search" id="searchBox" type="text" placeholder="Search entries and sub entries" />
+      <button class="icon-btn" id="btnAddEntry" title="Add entry" aria-label="Add entry">＋</button>
+      <button class="icon-btn" id="btnEditList" title="Edit current list" aria-label="Edit current list">✎</button>
+      <button class="icon-btn" id="btnDeleteList" title="Delete current list" aria-label="Delete current list">🗑</button>
+    </div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
 
-  <div class="toast" id="toast"></div>
-
-  <script>
-    const DB_NAME = 'offline_threads_tasks_db';
-    const DB_VERSION = 1;
-    const DB_STORE = 'kv';
-    const STATE_KEY = 'state';
-
-    const state = {
-      lists: [],
-      selectedListId: null,
-      search: ''
-    };
-
-    const els = {
-      listWrap: document.getElementById('listWrap'),
-      content: document.getElementById('content'),
-      currentListTitle: document.getElementById('currentListTitle'),
-      searchBox: document.getElementById('searchBox'),
-      btnAddList: document.getElementById('btnAddList'),
-      btnAddEntry: document.getElementById('btnAddEntry'),
-      btnEditList: document.getElementById('btnEditList'),
-      btnDeleteList: document.getElementById('btnDeleteList'),
-      btnExportAll: document.getElementById('btnExportAll'),
-      btnExportList: document.getElementById('btnExportList'),
-      btnImport: document.getElementById('btnImport'),
-      importFile: document.getElementById('importFile'),
-      modalBackdrop: document.getElementById('modalBackdrop'),
-      modalTitle: document.getElementById('modalTitle'),
-      modalBody: document.getElementById('modalBody'),
-      modalHint: document.getElementById('modalHint'),
-      modalClose: document.getElementById('modalClose'),
-      modalCancel: document.getElementById('modalCancel'),
-      modalForm: document.getElementById('modalForm'),
-      viewer: document.getElementById('viewer'),
-      viewerImg: document.getElementById('viewerImg'),
-      viewerClose: document.getElementById('viewerClose'),
-      toast: document.getElementById('toast')
-    };
-
-    let dbPromise = null;
-    let modalContext = null;
-
-    function uuid() {
-      return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
-    }
-
-    function nowISO() {
-      return new Date().toISOString();
-    }
-
-    function pad2(n) {
-      return String(n).padStart(2, '0');
-    }
-
-    function formatDateTime(iso) {
-      const d = new Date(iso);
-      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      return `${d.getFullYear()}-${months[d.getMonth()]}-${pad2(d.getDate())} : ${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}`;
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
-
-    function showToast(msg) {
-      els.toast.textContent = msg;
-      els.toast.classList.add('show');
-      clearTimeout(showToast.timer);
-      showToast.timer = setTimeout(() => els.toast.classList.remove('show'), 1600);
-    }
-
-    function deepCopy(obj) {
-      return JSON.parse(JSON.stringify(obj));
-    }
-
-    function openDB() {
-      if (dbPromise) return dbPromise;
-      dbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open(DB_NAME, DB_VERSION);
-        req.onupgradeneeded = () => {
-          const db = req.result;
-          if (!db.objectStoreNames.contains(DB_STORE)) {
-            db.createObjectStore(DB_STORE, { keyPath: 'key' });
-          }
-        };
-        req.onsuccess = () => resolve(req.result);
-        req.onerror = () => reject(req.error);
-      });
-      return dbPromise;
-    }
-
-    async function saveState() {
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(DB_STORE, 'readwrite');
-        tx.objectStore(DB_STORE).put({ key: STATE_KEY, value: deepCopy(state) });
-        tx.oncomplete = () => resolve();
-        tx.onerror = () => reject(tx.error);
-      });
-    }
-
-    async function loadState() {
-      const db = await openDB();
-      return new Promise((resolve, reject) => {
-        const tx = db.transaction(DB_STORE, 'readonly');
-        const req = tx.objectStore(DB_STORE).get(STATE_KEY);
-        req.onsuccess = () => {
-          const result = req.result;
-          resolve(result?.value || null);
-        };
-        req.onerror = () => reject(req.error);
-      });
-    }
-
-    function selectedList() {
-      return state.lists.find(l => l.id === state.selectedListId) || null;
-    }
-
-    function sortedLists() {
-      return [...state.lists].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-    }
-
-    function sortedEntries(list) {
-      const q = state.search.trim().toLowerCase();
-      const entries = [...(list?.entries || [])].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-      if (!q) return entries;
-      return entries.filter(entry => {
-        const hay = [entry.title, entry.summary, ...(entry.subEntries || []).map(s => s.text)].join(' ').toLowerCase();
-        return hay.includes(q);
-      });
-    }
-
-    function sortedSubEntries(entry) {
-      const subs = [...(entry?.subEntries || [])];
-      subs.sort((a, b) => {
-        if (a.pinned && !b.pinned) return -1;
-        if (!a.pinned && b.pinned) return 1;
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
-      });
-      return subs;
-    }
-
-    function touch(listOrEntryOrSub) {
-      listOrEntryOrSub.updatedAt = nowISO();
-    }
-
-    function ensureSelection() {
-      if (!state.selectedListId && state.lists.length) {
-        state.selectedListId = state.lists[0].id;
-      }
-      if (state.selectedListId && !state.lists.some(l => l.id === state.selectedListId)) {
-        state.selectedListId = state.lists[0]?.id || null;
-      }
-    }
-
-    function render() {
-      ensureSelection();
-      renderLists();
-      renderCurrent();
-      saveState().catch(err => console.error(err));
-    }
-
-    function renderLists() {
-      const lists = sortedLists();
-      if (!lists.length) {
-        els.listWrap.innerHTML = `
-          <div class="empty" style="height:auto; min-height: 280px;">
-            <div class="box">
-              <h3 style="margin-top:0;">No lists yet</h3>
-              <p>Create your first list with the + button.</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      els.listWrap.innerHTML = lists.map(list => {
-        const active = list.id === state.selectedListId ? 'active' : '';
-        const entryCount = list.entries?.length || 0;
-        return `
-          <button class="list-item ${active}" data-id="${list.id}">
-            <div class="title">
-              <span>${escapeHtml(list.name)}</span>
-              <span class="muted">${entryCount}</span>
-            </div>
-            <div class="meta">Updated ${escapeHtml(formatDateTime(list.updatedAt))}</div>
-          </button>
-        `;
-      }).join('');
-
-      els.listWrap.querySelectorAll('.list-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-          state.selectedListId = btn.dataset.id;
-          render();
-        });
-      });
-    }
-
-    function renderCurrent() {
-      const list = selectedList();
-      els.currentListTitle.textContent = list ? list.name : 'No list selected';
-      els.btnAddEntry.disabled = !list;
-      els.btnEditList.disabled = !list;
-      els.btnDeleteList.disabled = !list;
-      els.btnExportList.disabled = !list;
-
-      if (!list) {
-        els.content.innerHTML = `
-          <div class="empty">
-            <div class="box">
-              <h2 style="margin-top:0;">Start by creating a list</h2>
-              <p>Then add entries, then sub entries under each entry.</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      const entries = sortedEntries(list);
-      if (!entries.length) {
-        els.content.innerHTML = `
-          <div class="empty">
-            <div class="box">
-              <h2 style="margin-top:0;">No entries yet</h2>
-              <p>Tap the + button on the top bar to add the first entry.</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      els.content.innerHTML = entries.map(entry => renderEntry(entry)).join('');
-      bindEntryActions();
-    }
-
-    function renderEntry(entry) {
-      const subEntries = sortedSubEntries(entry);
-      const subHtml = subEntries.length
-        ? `<div class="sub-list">${subEntries.map(sub => renderSubEntry(entry, sub)).join('')}</div>`
-        : `<div class="muted" style="padding: 8px 4px 0;">No sub entries yet.</div>`;
-
-      return `
-        <section class="entry" data-entry-id="${entry.id}">
-          <div class="entry-head">
-            <div class="entry-main">
-              <div class="entry-title">
-                <span>${escapeHtml(entry.title)}</span>
-              </div>
-              ${entry.summary ? `<div class="entry-summary">${escapeHtml(entry.summary)}</div>` : ''}
-              <div class="meta-bar">⏱ ${escapeHtml(formatDateTime(entry.updatedAt))}</div>
-            </div>
-            <div class="entry-actions">
-              <button class="icon-btn" data-action="add-sub" data-entry-id="${entry.id}" title="Add sub entry">＋</button>
-              <button class="icon-btn" data-action="edit-entry" data-entry-id="${entry.id}" title="Edit entry">✎</button>
-              <button class="icon-btn" data-action="delete-entry" data-entry-id="${entry.id}" title="Delete entry">🗑</button>
-            </div>
-          </div>
-          <div class="entry-body">
-            ${subHtml}
-          </div>
-        </section>
-      `;
-    }
-
-    function renderSubEntry(entry, sub) {
-      const thumbs = (sub.images || []).map((img, idx) => `
-        <div class="thumb" data-image="${img.dataUrl.replaceAll('"', '&quot;')}">
-          <img src="${img.dataUrl}" alt="attachment ${idx + 1}" />
-          <button class="x" type="button" data-action="remove-sub-image" data-entry-id="${entry.id}" data-sub-id="${sub.id}" data-image-id="${img.id}" title="Remove image">×</button>
+<div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h2 id="modalTitle">Modal</h2>
+      <button class="icon-btn" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <form id="modalForm">
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot">
+        <div class="small" id="modalHint"></div>
+        <div class="entry-actions">
+          <button class="ghost-btn" type="button" id="modalCancel">Cancel</button>
+          <button class="primary-btn" type="submit" id="modalSave">Save</button>
         </div>
-      `).join('');
+      </div>
+    </form>
+  </div>
+</div>
 
-      return `
-        <article class="sub-item ${sub.pinned ? 'pinned' : ''}" data-sub-id="${sub.id}">
-          <div class="sub-head">
-            <div>
-              <div class="sub-meta">⏱ ${escapeHtml(formatDateTime(sub.updatedAt))}${sub.pinned ? ' · 📌 pinned' : ''}</div>
-              <div class="sub-actions">
-                <button class="ghost-btn" data-action="toggle-pin" data-entry-id="${entry.id}" data-sub-id="${sub.id}">${sub.pinned ? 'Unpin' : 'Pin'}</button>
-                <button class="ghost-btn" data-action="edit-sub" data-entry-id="${entry.id}" data-sub-id="${sub.id}">Edit</button>
-                <button class="ghost-btn" data-action="delete-sub" data-entry-id="${entry.id}" data-sub-id="${sub.id}">Delete</button>
-              </div>
-            </div>
+<div class="viewer" id="viewer" aria-hidden="true">
+  <button class="close" id="viewerClose" aria-label="Close image">✕</button>
+  <img id="viewerImg" alt="Preview" />
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = 'offline_threads_tasks_state_v3';
+
+const state = { lists: [], selectedListId: null, search: '' };
+const els = {
+  listWrap: document.getElementById('listWrap'),
+  content: document.getElementById('content'),
+  currentListTitle: document.getElementById('currentListTitle'),
+  searchBox: document.getElementById('searchBox'),
+  btnAddList: document.getElementById('btnAddList'),
+  btnAddEntry: document.getElementById('btnAddEntry'),
+  btnEditList: document.getElementById('btnEditList'),
+  btnDeleteList: document.getElementById('btnDeleteList'),
+  btnExportAll: document.getElementById('btnExportAll'),
+  btnExportList: document.getElementById('btnExportList'),
+  btnImport: document.getElementById('btnImport'),
+  importFile: document.getElementById('importFile'),
+  modalBackdrop: document.getElementById('modalBackdrop'),
+  modalTitle: document.getElementById('modalTitle'),
+  modalBody: document.getElementById('modalBody'),
+  modalHint: document.getElementById('modalHint'),
+  modalClose: document.getElementById('modalClose'),
+  modalCancel: document.getElementById('modalCancel'),
+  modalForm: document.getElementById('modalForm'),
+  viewer: document.getElementById('viewer'),
+  viewerImg: document.getElementById('viewerImg'),
+  viewerClose: document.getElementById('viewerClose'),
+  toast: document.getElementById('toast'),
+};
+let modalContext = null;
+
+function uuid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2); }
+function nowISO(){ return new Date().toISOString(); }
+function pad2(n){ return String(n).padStart(2,'0'); }
+function formatDateTime(iso){
+  const d = new Date(iso);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getFullYear()}-${months[d.getMonth()]}-${pad2(d.getDate())} : ${pad2(d.getHours())}-${pad2(d.getMinutes())}-${pad2(d.getSeconds())}`;
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+    .replaceAll('"','&quot;').replaceAll("'",'&#39;');
+}
+function deepCopy(obj){ return JSON.parse(JSON.stringify(obj)); }
+function showToast(msg){
+  els.toast.textContent = msg;
+  els.toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => els.toast.classList.remove('show'), 1500);
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  }catch{return null;}
+}
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+function touch(obj){ obj.updatedAt = nowISO(); }
+function selectedList(){ return state.lists.find(l => l.id === state.selectedListId) || null; }
+function ensureSelection(){
+  if (!state.selectedListId && state.lists.length) state.selectedListId = state.lists[0].id;
+  if (state.selectedListId && !state.lists.some(l => l.id === state.selectedListId)) state.selectedListId = state.lists[0]?.id || null;
+}
+function sortedLists(){ return [...state.lists].sort((a,b)=> new Date(b.updatedAt) - new Date(a.updatedAt)); }
+function sortedEntries(list){
+  const q = state.search.trim().toLowerCase();
+  let arr = [...(list?.entries || [])].sort((a,b)=> new Date(b.updatedAt) - new Date(a.updatedAt));
+  if (!q) return arr;
+  return arr.filter(entry => {
+    const hay = [entry.title, entry.summary, ...(entry.subEntries||[]).map(s => s.text)].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+}
+function sortedSubEntries(entry){
+  return [...(entry?.subEntries || [])].sort((a,b)=>{
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
+  });
+}
+function render(){
+  ensureSelection();
+  renderLists();
+  renderCurrent();
+  saveState();
+}
+function renderLists(){
+  const lists = sortedLists();
+  if (!lists.length){
+    els.listWrap.innerHTML = `<div class="empty" style="height:auto; min-height:280px;"><div class="box"><h3 style="margin-top:0;">No lists yet</h3><p>Create your first list with the + button.</p></div></div>`;
+    return;
+  }
+  els.listWrap.innerHTML = lists.map(list => `
+    <button class="list-item ${list.id === state.selectedListId ? 'active' : ''}" data-id="${list.id}">
+      <div class="title"><span>${escapeHtml(list.name)}</span><span class="muted">${(list.entries||[]).length}</span></div>
+      <div class="meta">Updated ${escapeHtml(formatDateTime(list.updatedAt))}</div>
+    </button>
+  `).join('');
+  els.listWrap.querySelectorAll('.list-item').forEach(btn => btn.addEventListener('click', ()=>{
+    state.selectedListId = btn.dataset.id;
+    render();
+  }));
+}
+function renderCurrent(){
+  const list = selectedList();
+  els.currentListTitle.textContent = list ? list.name : 'No list selected';
+  els.btnAddEntry.disabled = !list;
+  els.btnEditList.disabled = !list;
+  els.btnDeleteList.disabled = !list;
+  els.btnExportList.disabled = !list;
+
+  if (!list){
+    els.content.innerHTML = `<div class="empty"><div class="box"><h2 style="margin-top:0;">Start by creating a list</h2><p>Then add entries, then sub entries under each entry.</p></div></div>`;
+    return;
+  }
+  const entries = sortedEntries(list);
+  if (!entries.length){
+    els.content.innerHTML = `<div class="empty"><div class="box"><h2 style="margin-top:0;">No entries yet</h2><p>Tap the + button on the top bar to add the first entry.</p></div></div>`;
+    return;
+  }
+  els.content.innerHTML = entries.map(renderEntry).join('');
+  bindActions();
+}
+function renderEntry(entry){
+  const subs = sortedSubEntries(entry);
+  const subHtml = subs.length ? `<div class="sub-list">${subs.map(sub => renderSubEntry(entry, sub)).join('')}</div>` : `<div class="muted" style="padding:8px 4px 0;">No sub entries yet.</div>`;
+  return `
+    <section class="entry" data-entry-id="${entry.id}">
+      <div class="entry-head">
+        <div class="entry-main">
+          <div class="entry-title"><span>${escapeHtml(entry.title)}</span></div>
+          ${entry.summary ? `<div class="entry-summary">${escapeHtml(entry.summary)}</div>` : ''}
+          <div class="meta-bar">⏱ ${escapeHtml(formatDateTime(entry.updatedAt))}</div>
+        </div>
+        <div class="entry-actions">
+          <button class="icon-btn" data-action="add-sub" data-entry-id="${entry.id}" title="Add sub entry" aria-label="Add sub entry">＋</button>
+          <button class="icon-btn" data-action="edit-entry" data-entry-id="${entry.id}" title="Edit entry" aria-label="Edit entry">✎</button>
+          <button class="icon-btn" data-action="delete-entry" data-entry-id="${entry.id}" title="Delete entry" aria-label="Delete entry">🗑</button>
+        </div>
+      </div>
+      <div class="entry-body">${subHtml}</div>
+    </section>
+  `;
+}
+function renderSubEntry(entry, sub){
+  const thumbs = (sub.images || []).map((img, idx) => `
+    <div class="thumb" data-image="${img.dataUrl.replaceAll('"','&quot;')}">
+      <img src="${img.dataUrl}" alt="attachment ${idx+1}" />
+      <button class="x" type="button" data-action="remove-sub-image" data-entry-id="${entry.id}" data-sub-id="${sub.id}" data-image-id="${img.id}" title="Remove image">×</button>
+    </div>
+  `).join('');
+  return `
+    <article class="sub-item ${sub.pinned ? 'pinned' : ''}" data-sub-id="${sub.id}">
+      <div class="sub-head">
+        <div style="min-width:0; flex:1;">
+          <div class="sub-meta">
+            <span>⏱ ${escapeHtml(formatDateTime(sub.updatedAt))}</span>
+            ${sub.pinned ? '<span>📌 pinned</span>' : ''}
           </div>
-          <div class="sub-bubble">${escapeHtml(sub.text || '(empty)')}</div>
-          ${sub.images && sub.images.length ? `<div class="thumbs">${thumbs}</div>` : ''}
-        </article>
-      `;
+        </div>
+        <div class="sub-actions">
+          <button class="icon-btn" data-action="toggle-pin" data-entry-id="${entry.id}" data-sub-id="${sub.id}" title="${sub.pinned ? 'Unpin' : 'Pin'}" aria-label="${sub.pinned ? 'Unpin sub entry' : 'Pin sub entry'}">📌</button>
+          <button class="icon-btn" data-action="edit-sub" data-entry-id="${entry.id}" data-sub-id="${sub.id}" title="Edit" aria-label="Edit sub entry">✎</button>
+          <button class="icon-btn" data-action="delete-sub" data-entry-id="${entry.id}" data-sub-id="${sub.id}" title="Delete" aria-label="Delete sub entry">🗑</button>
+        </div>
+      </div>
+      <div class="sub-bubble">${escapeHtml(sub.text || '(empty)')}</div>
+      ${sub.images && sub.images.length ? `<div class="thumbs">${thumbs}</div>` : ''}
+    </article>
+  `;
+}
+function bindActions(){
+  els.content.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const a = btn.dataset.action, entryId = btn.dataset.entryId, subId = btn.dataset.subId;
+      if (a === 'add-sub') return openSubModal(entryId);
+      if (a === 'edit-entry') return openEntryModal(entryId);
+      if (a === 'delete-entry') return deleteEntry(entryId);
+      if (a === 'edit-sub') return openSubModal(entryId, subId);
+      if (a === 'delete-sub') return deleteSubEntry(entryId, subId);
+      if (a === 'toggle-pin') return togglePin(entryId, subId);
+      if (a === 'remove-sub-image') return removeSubImage(entryId, subId, btn.dataset.imageId);
+    });
+  });
+  els.content.querySelectorAll('.thumb').forEach(t => t.addEventListener('click', e => {
+    if (e.target.closest('button')) return;
+    openViewer(t.dataset.image);
+  }));
+}
+function openModal(title, bodyHtml, hint=''){
+  els.modalTitle.textContent = title;
+  els.modalBody.innerHTML = bodyHtml;
+  els.modalHint.textContent = hint;
+  els.modalBackdrop.classList.add('show');
+  els.modalBackdrop.setAttribute('aria-hidden','false');
+}
+function closeModal(){
+  els.modalBackdrop.classList.remove('show');
+  els.modalBackdrop.setAttribute('aria-hidden','true');
+  els.modalForm.reset();
+  els.modalBody.innerHTML = '';
+  modalContext = null;
+}
+function openListModal(list=null){
+  modalContext = { type:'list', listId:list?.id || null };
+  openModal(list ? 'Edit list' : 'Add list', `
+    <div class="field">
+      <label for="listName">List name</label>
+      <input id="listName" type="text" maxlength="120" placeholder="e.g. Work, Games, School" value="${escapeHtml(list?.name || '')}" required />
+    </div>
+  `, 'Each list is its own container for threads.');
+  setTimeout(()=>document.getElementById('listName')?.focus(),0);
+}
+function openEntryModal(entryId=null){
+  const list = selectedList();
+  if (!list){ showToast('Create a list first'); return; }
+  const entry = list.entries.find(e => e.id === entryId) || null;
+  modalContext = { type:'entry', entryId };
+  openModal(entry ? 'Edit entry' : 'Add entry', `
+    <div class="field">
+      <label for="entryTitle">Title</label>
+      <input id="entryTitle" type="text" maxlength="180" placeholder="Entry title" value="${escapeHtml(entry?.title || '')}" required />
+    </div>
+    <div class="field">
+      <label for="entrySummary">Summary</label>
+      <textarea id="entrySummary" maxlength="4000" placeholder="Write a summary for this main entry">${escapeHtml(entry?.summary || '')}</textarea>
+    </div>
+  `, 'Main entries sort by last edit, newest first.');
+  setTimeout(()=>document.getElementById('entryTitle')?.focus(),0);
+}
+function openSubModal(entryId, subId=null){
+  const list = selectedList(); if (!list) return;
+  const entry = list.entries.find(e => e.id === entryId); if (!entry) return;
+  const sub = entry.subEntries.find(s => s.id === subId) || null;
+  modalContext = { type:'sub', entryId, subId };
+  openModal(sub ? 'Edit sub entry' : 'Add sub entry', `
+    <div class="field">
+      <label for="subText">Content</label>
+      <textarea id="subText" maxlength="8000" placeholder="Write the sub entry content here" required>${escapeHtml(sub?.text || '')}</textarea>
+    </div>
+    <div class="field">
+      <label>Pictures</label>
+      <div class="images-row">
+        <input id="subImages" type="file" accept="image/*" multiple />
+        <label style="display:flex;align-items:center;gap:8px;"><input id="subPinned" type="checkbox" ${sub?.pinned ? 'checked' : ''} /> Pin this sub entry</label>
+      </div>
+    </div>
+    <div class="field">
+      <div class="small">Existing pictures stay unless removed individually from the card. New pictures will be appended.</div>
+      <div class="preview-grid" id="imagePreviewGrid"></div>
+    </div>
+  `, 'Pinned sub entries stay on top inside their parent entry.');
+  setTimeout(() => {
+    document.getElementById('subText')?.focus();
+    setupImagePreview(sub);
+  }, 0);
+}
+async function fileToDataURL(file){
+  return new Promise((resolve,reject)=>{
+    const r = new FileReader();
+    r.onload = ()=>resolve(r.result);
+    r.onerror = ()=>reject(r.error);
+    r.readAsDataURL(file);
+  });
+}
+async function setupImagePreview(existingSub=null){
+  const grid = document.getElementById('imagePreviewGrid');
+  const fileInput = document.getElementById('subImages');
+  const existing = existingSub ? [...(existingSub.images || [])] : [];
+  let newImages = [];
+
+  function draw(){
+    const items = [...existing.map(img => ({...img})), ...newImages];
+    if (!items.length){
+      grid.innerHTML = '<div class="muted" style="grid-column:1/-1;">No images selected yet.</div>';
+      return;
     }
-
-    function bindEntryActions() {
-      els.content.querySelectorAll('[data-action]').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          const action = btn.dataset.action;
-          const entryId = btn.dataset.entryId;
-          const subId = btn.dataset.subId;
-          if (action === 'add-sub') return openSubModal(entryId);
-          if (action === 'edit-entry') return openEntryModal(entryId);
-          if (action === 'delete-entry') return deleteEntry(entryId);
-          if (action === 'edit-sub') return openSubModal(entryId, subId);
-          if (action === 'delete-sub') return deleteSubEntry(entryId, subId);
-          if (action === 'toggle-pin') return togglePin(entryId, subId);
-          if (action === 'remove-sub-image') return removeSubImage(entryId, subId, btn.dataset.imageId);
-        });
-      });
-
-      els.content.querySelectorAll('.thumb').forEach(thumb => {
-        thumb.addEventListener('click', (e) => {
-          if (e.target.closest('button')) return;
-          openImageViewer(thumb.dataset.image);
-        });
-      });
-    }
-
-    function openModal(title, bodyHtml, hint = '') {
-      els.modalTitle.textContent = title;
-      els.modalBody.innerHTML = bodyHtml;
-      els.modalHint.textContent = hint;
-      els.modalBackdrop.classList.add('show');
-      els.modalBackdrop.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeModal() {
-      els.modalBackdrop.classList.remove('show');
-      els.modalBackdrop.setAttribute('aria-hidden', 'true');
-      els.modalForm.reset();
-      els.modalBody.innerHTML = '';
-      modalContext = null;
-    }
-
-    function openListModal(list = null) {
-      modalContext = { type: 'list', listId: list?.id || null };
-      openModal(
-        list ? 'Edit list' : 'Add list',
-        `
-          <div class="field">
-            <label for="listName">List name</label>
-            <input id="listName" type="text" maxlength="120" placeholder="e.g. Work, Games, School" value="${escapeHtml(list?.name || '')}" required />
-          </div>
-        `,
-        'Each list is its own container for threads.'
-      );
-      setTimeout(() => document.getElementById('listName')?.focus(), 0);
-    }
-
-    function openEntryModal(entryId = null) {
-      const list = selectedList();
-      if (!list) {
-        showToast('Create a list first');
-        return;
-      }
-      const entry = list.entries.find(e => e.id === entryId) || null;
-      modalContext = { type: 'entry', entryId };
-      openModal(
-        entry ? 'Edit entry' : 'Add entry',
-        `
-          <div class="field">
-            <label for="entryTitle">Title</label>
-            <input id="entryTitle" type="text" maxlength="180" placeholder="Entry title" value="${escapeHtml(entry?.title || '')}" required />
-          </div>
-          <div class="field">
-            <label for="entrySummary">Summary</label>
-            <textarea id="entrySummary" maxlength="4000" placeholder="Write a summary for this main entry">${escapeHtml(entry?.summary || '')}</textarea>
-          </div>
-        `,
-        'Main entries sort by last edit, newest first.'
-      );
-      setTimeout(() => document.getElementById('entryTitle')?.focus(), 0);
-    }
-
-    function openSubModal(entryId, subId = null) {
-      const list = selectedList();
-      if (!list) return;
-      const entry = list.entries.find(e => e.id === entryId);
-      if (!entry) return;
-      const sub = entry.subEntries.find(s => s.id === subId) || null;
-      modalContext = { type: 'sub', entryId, subId };
-      openModal(
-        sub ? 'Edit sub entry' : 'Add sub entry',
-        `
-          <div class="field">
-            <label for="subText">Content</label>
-            <textarea id="subText" maxlength="8000" placeholder="Write the sub entry content here" required>${escapeHtml(sub?.text || '')}</textarea>
-          </div>
-          <div class="field">
-            <label>Pictures</label>
-            <div class="images-row">
-              <input id="subImages" type="file" accept="image/*" multiple />
-              <label style="display:flex;align-items:center;gap:8px;">
-                <input id="subPinned" type="checkbox" ${sub?.pinned ? 'checked' : ''} />
-                Pin this sub entry
-              </label>
-            </div>
-          </div>
-          <div class="field">
-            <div class="small">Existing pictures stay unless removed individually from the card. New pictures will be appended.</div>
-            <div class="preview-grid" id="imagePreviewGrid"></div>
-          </div>
-        `,
-        'Pinned sub entries stay on top inside their parent entry.'
-      );
-      setTimeout(() => {
-        document.getElementById('subText')?.focus();
-        setupImagePreview(sub);
-      }, 0);
-    }
-
-    async function setupImagePreview(existingSub = null) {
-      const grid = document.getElementById('imagePreviewGrid');
-      const fileInput = document.getElementById('subImages');
-      const existing = existingSub ? [...(existingSub.images || [])] : [];
-      let newImages = [];
-
-      function draw() {
-        const items = [
-          ...existing.map(img => ({ ...img, existing: true })),
-          ...newImages
-        ];
-        if (!items.length) {
-          grid.innerHTML = '<div class="muted" style="grid-column:1/-1;">No images selected yet.</div>';
-          return;
-        }
-        grid.innerHTML = items.map((img, idx) => `
-          <div class="preview">
-            <img src="${img.dataUrl}" alt="preview ${idx + 1}" />
-            <button type="button" data-remove-preview="${idx}">×</button>
-          </div>
-        `).join('');
-
-        grid.querySelectorAll('[data-remove-preview]').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const index = Number(btn.dataset.removePreview);
-            const totalExisting = existing.length;
-            if (index < totalExisting) existing.splice(index, 1);
-            else newImages.splice(index - totalExisting, 1);
-            draw();
-          });
-        });
-      }
-
-      fileInput.addEventListener('change', async () => {
-        const files = Array.from(fileInput.files || []);
-        for (const file of files) {
-          const dataUrl = await fileToDataURL(file);
-          newImages.push({ id: uuid(), name: file.name, type: file.type, dataUrl });
-        }
-        fileInput.value = '';
-        draw();
-      }, { once: true });
-
+    grid.innerHTML = items.map((img, idx) => `
+      <div class="preview">
+        <img src="${img.dataUrl}" alt="preview ${idx + 1}" />
+        <button type="button" data-remove-preview="${idx}">×</button>
+      </div>
+    `).join('');
+    grid.querySelectorAll('[data-remove-preview]').forEach(btn => btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.removePreview);
+      if (idx < existing.length) existing.splice(idx, 1); else newImages.splice(idx - existing.length, 1);
       draw();
-      modalContext.imageState = {
-        get images() { return [...existing, ...newImages]; }
-      };
+    }));
+  }
+
+  fileInput.addEventListener('change', async () => {
+    const files = Array.from(fileInput.files || []);
+    for (const file of files){
+      const dataUrl = await fileToDataURL(file);
+      newImages.push({ id: uuid(), name:file.name, type:file.type, dataUrl });
     }
+    fileInput.value = '';
+    draw();
+  }, { once:true });
 
-    function fileToDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
-    }
+  draw();
+  modalContext.imageState = { get images(){ return [...existing, ...newImages]; } };
+}
+function openViewer(dataUrl){ els.viewerImg.src = dataUrl; els.viewer.classList.add('show'); els.viewer.setAttribute('aria-hidden','false'); }
+function closeViewer(){ els.viewer.classList.remove('show'); els.viewer.setAttribute('aria-hidden','true'); els.viewerImg.src=''; }
+function getFormValue(id){ return document.getElementById(id)?.value || ''; }
+function getEntry(list, id){ return list?.entries.find(e => e.id === id) || null; }
+function getSub(entry, id){ return entry?.subEntries.find(s => s.id === id) || null; }
 
-    function getFormValue(id) {
-      const el = document.getElementById(id);
-      return el ? el.value : '';
-    }
+function createList(name){
+  const list = { id:uuid(), name, createdAt:nowISO(), updatedAt:nowISO(), entries:[] };
+  state.lists.unshift(list);
+  state.selectedListId = list.id;
+  render();
+  showToast('List added');
+}
+function updateListName(list, name){ list.name = name; touch(list); render(); showToast('List updated'); }
+function createEntry(list, title, summary){
+  list.entries.unshift({ id:uuid(), title, summary, createdAt:nowISO(), updatedAt:nowISO(), subEntries:[] });
+  touch(list);
+  render();
+  showToast('Entry added');
+}
+function updateEntry(entry, title, summary){ entry.title = title; entry.summary = summary; touch(entry); touch(selectedList()); render(); showToast('Entry updated'); }
+function createSubEntry(entry, text, images, pinned){
+  entry.subEntries.unshift({ id:uuid(), text, images, pinned, createdAt:nowISO(), updatedAt:nowISO() });
+  touch(entry); touch(selectedList()); render(); showToast('Sub entry added');
+}
+function updateSubEntry(sub, text, images, pinned){
+  sub.text = text; sub.images = images; sub.pinned = pinned; touch(sub);
+  const entry = selectedList()?.entries.find(e => e.subEntries.some(s => s.id === sub.id));
+  touch(entry); touch(selectedList()); render(); showToast('Sub entry updated');
+}
+function deleteEntry(entryId){
+  const list = selectedList(); if (!list) return;
+  const entry = getEntry(list, entryId); if (!entry) return;
+  if (!confirm(`Delete entry "${entry.title}"?`)) return;
+  list.entries = list.entries.filter(e => e.id !== entryId);
+  touch(list); render(); showToast('Entry deleted');
+}
+function deleteSubEntry(entryId, subId){
+  const list = selectedList(); if (!list) return;
+  const entry = getEntry(list, entryId); const sub = getSub(entry, subId); if (!sub) return;
+  if (!confirm('Delete this sub entry?')) return;
+  entry.subEntries = entry.subEntries.filter(s => s.id !== subId);
+  touch(entry); touch(list); render(); showToast('Sub entry deleted');
+}
+function togglePin(entryId, subId){
+  const list = selectedList(); if (!list) return;
+  const entry = getEntry(list, entryId); const sub = getSub(entry, subId); if (!sub) return;
+  sub.pinned = !sub.pinned;
+  render();
+  showToast(sub.pinned ? 'Pinned' : 'Unpinned');
+}
+function removeSubImage(entryId, subId, imageId){
+  const list = selectedList(); if (!list) return;
+  const entry = getEntry(list, entryId); const sub = getSub(entry, subId); if (!sub) return;
+  sub.images = (sub.images || []).filter(img => img.id !== imageId);
+  touch(sub); touch(entry); touch(list);
+  render(); showToast('Image removed');
+}
+async function exportJson(obj, filename){
+  const json = JSON.stringify(obj, null, 2);
+  if ('showSaveFilePicker' in window){
+    try{
+      const handle = await window.showSaveFilePicker({ suggestedName: filename, types:[{ description:'JSON file', accept:{ 'application/json':['.json'] } }] });
+      const writable = await handle.createWritable();
+      await writable.write(json); await writable.close();
+      showToast('Saved to selected location');
+      return;
+    }catch(err){ if (err?.name === 'AbortError') return; }
+  }
+  const blob = new Blob([json], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Download started');
+}
+function exportAll(){ exportJson({ app:'Offline Threads Tasks', exportedAt:nowISO(), lists: deepCopy(state.lists) }, 'offline-threads-tasks-all.json'); }
+function exportCurrent(){ const list = selectedList(); if (list) exportJson({ app:'Offline Threads Tasks', exportedAt:nowISO(), list: deepCopy(list) }, `${safeFileName(list.name)}.json`); }
+function safeFileName(name){ return String(name || 'list').replace(/[\\/:*?"<>|]+/g, '-').trim().replace(/\s+/g, '_') || 'list'; }
+async function importJsonFile(file){
+  const data = JSON.parse(await file.text());
+  if (Array.isArray(data.lists)){
+    state.lists = data.lists;
+    state.selectedListId = state.lists[0]?.id || null;
+  }else if (data.list && data.list.id){
+    const idx = state.lists.findIndex(l => l.id === data.list.id);
+    if (idx >= 0) state.lists[idx] = data.list; else state.lists.unshift(data.list);
+    state.selectedListId = data.list.id;
+  }else throw new Error('Unsupported file format');
+  render(); showToast('Imported');
+}
+function openListForEdit(){ const list = selectedList(); if (list) openListModal(list); }
+function removeCurrentList(){
+  const list = selectedList(); if (!list) return;
+  if (!confirm(`Delete list "${list.name}" and everything inside it?`)) return;
+  state.lists = state.lists.filter(l => l.id !== list.id);
+  state.selectedListId = state.lists[0]?.id || null;
+  render(); showToast('List deleted');
+}
 
-    function openImageViewer(dataUrl) {
-      els.viewerImg.src = dataUrl;
-      els.viewer.classList.add('show');
-      els.viewer.setAttribute('aria-hidden', 'false');
-    }
+els.btnAddList.addEventListener('click', () => openListModal());
+els.btnAddEntry.addEventListener('click', () => openEntryModal());
+els.btnEditList.addEventListener('click', openListForEdit);
+els.btnDeleteList.addEventListener('click', removeCurrentList);
+els.btnExportAll.addEventListener('click', exportAll);
+els.btnExportList.addEventListener('click', exportCurrent);
+els.btnImport.addEventListener('click', () => els.importFile.click());
+els.importFile.addEventListener('change', async () => {
+  const file = els.importFile.files?.[0]; if (!file) return;
+  try{ await importJsonFile(file); } catch(err){ alert('Import failed: ' + err.message); }
+  els.importFile.value = '';
+});
+els.searchBox.addEventListener('input', ()=>{ state.search = els.searchBox.value; renderCurrent(); });
+els.modalClose.addEventListener('click', closeModal);
+els.modalCancel.addEventListener('click', closeModal);
+els.modalBackdrop.addEventListener('click', e => { if (e.target === els.modalBackdrop) closeModal(); });
+els.viewerClose.addEventListener('click', closeViewer);
+els.viewer.addEventListener('click', e => { if (e.target === els.viewer) closeViewer(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape'){ if (els.viewer.classList.contains('show')) closeViewer(); else if (els.modalBackdrop.classList.contains('show')) closeModal(); } });
 
-    function closeImageViewer() {
-      els.viewer.classList.remove('show');
-      els.viewer.setAttribute('aria-hidden', 'true');
-      els.viewerImg.src = '';
-    }
+els.modalForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const current = modalContext;
+  const list = selectedList();
 
-    function getListById(listId) {
-      return state.lists.find(l => l.id === listId);
-    }
+  if (current?.type === 'list'){
+    const name = document.getElementById('listName')?.value.trim();
+    if (!name) return;
+    const existing = current.listId ? state.lists.find(l => l.id === current.listId) : null;
+    if (existing) updateListName(existing, name); else createList(name);
+    closeModal();
+    return;
+  }
 
-    function getEntry(list, entryId) {
-      return list?.entries.find(e => e.id === entryId) || null;
-    }
+  if (!list){ showToast('Create a list first'); return; }
 
-    function getSub(entry, subId) {
-      return entry?.subEntries.find(s => s.id === subId) || null;
-    }
+  if (current?.type === 'entry'){
+    const title = getFormValue('entryTitle').trim();
+    const summary = getFormValue('entrySummary').trim();
+    if (!title) return;
+    const entry = list.entries.find(e => e.id === current.entryId);
+    if (entry) updateEntry(entry, title, summary); else createEntry(list, title, summary);
+    closeModal();
+    return;
+  }
 
-    async function deleteEntry(entryId) {
-      const list = selectedList();
-      const entry = getEntry(list, entryId);
-      if (!entry) return;
-      if (!confirm(`Delete entry "${entry.title}"?`)) return;
-      list.entries = list.entries.filter(e => e.id !== entryId);
-      touch(list);
-      showToast('Entry deleted');
-      render();
-    }
+  if (current?.type === 'sub'){
+    const entry = list.entries.find(e => e.id === current.entryId);
+    if (!entry) return;
+    const text = getFormValue('subText').trim();
+    if (!text) return;
+    const pinned = document.getElementById('subPinned')?.checked || false;
+    const images = current.imageState?.images || [];
+    const sub = entry.subEntries.find(s => s.id === current.subId);
+    if (sub) updateSubEntry(sub, text, images, pinned); else createSubEntry(entry, text, images, pinned);
+    closeModal();
+    return;
+  }
+});
 
-    async function deleteSubEntry(entryId, subId) {
-      const list = selectedList();
-      const entry = getEntry(list, entryId);
-      const sub = getSub(entry, subId);
-      if (!sub) return;
-      if (!confirm('Delete this sub entry?')) return;
-      entry.subEntries = entry.subEntries.filter(s => s.id !== subId);
-      touch(entry);
-      touch(list);
-      showToast('Sub entry deleted');
-      render();
-    }
-
-    function togglePin(entryId, subId) {
-      const list = selectedList();
-      const entry = getEntry(list, entryId);
-      const sub = getSub(entry, subId);
-      if (!sub) return;
-      sub.pinned = !sub.pinned;
-      showToast(sub.pinned ? 'Pinned' : 'Unpinned');
-      render();
-    }
-
-    function removeSubImage(entryId, subId, imageId) {
-      const list = selectedList();
-      const entry = getEntry(list, entryId);
-      const sub = getSub(entry, subId);
-      if (!sub) return;
-      sub.images = (sub.images || []).filter(img => img.id !== imageId);
-      touch(sub);
-      touch(entry);
-      touch(list);
-      showToast('Image removed');
-      render();
-    }
-
-    async function exportJson(obj, filename) {
-      const json = JSON.stringify(obj, null, 2);
-      if ('showSaveFilePicker' in window) {
-        try {
-          const handle = await window.showSaveFilePicker({
-            suggestedName: filename,
-            types: [{ description: 'JSON file', accept: { 'application/json': ['.json'] } }]
-          });
-          const writable = await handle.createWritable();
-          await writable.write(json);
-          await writable.close();
-          showToast('Saved to selected location');
-          return;
-        } catch (err) {
-          if (err && err.name === 'AbortError') return;
-        }
-      }
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('Download started');
-    }
-
-    function currentExportPayload(all = true) {
-      if (all) {
-        return {
-          app: 'Offline Threads Tasks',
-          exportedAt: nowISO(),
-          lists: deepCopy(state.lists)
-        };
-      }
-      const list = selectedList();
-      return {
-        app: 'Offline Threads Tasks',
-        exportedAt: nowISO(),
-        list: deepCopy(list)
-      };
-    }
-
-    async function importJsonFile(file) {
-      const text = await file.text();
-      const data = JSON.parse(text);
-
-      if (Array.isArray(data.lists)) {
-        state.lists = data.lists;
-        state.selectedListId = state.lists[0]?.id || null;
-      } else if (data.list && data.list.id) {
-        const idx = state.lists.findIndex(l => l.id === data.list.id);
-        if (idx >= 0) state.lists[idx] = data.list;
-        else state.lists.unshift(data.list);
-        state.selectedListId = data.list.id;
-      } else {
-        throw new Error('Unsupported file format');
-      }
-      render();
-      showToast('Imported');
-    }
-
-    function createList(name) {
-      const list = {
-        id: uuid(),
-        name,
-        createdAt: nowISO(),
-        updatedAt: nowISO(),
-        entries: []
-      };
-      state.lists.unshift(list);
-      state.selectedListId = list.id;
-      render();
-      showToast('List added');
-    }
-
-    function updateListName(list, name) {
-      list.name = name;
-      touch(list);
-      render();
-      showToast('List updated');
-    }
-
-    function createEntry(list, title, summary) {
-      const entry = {
-        id: uuid(),
-        title,
-        summary,
-        createdAt: nowISO(),
-        updatedAt: nowISO(),
-        subEntries: []
-      };
-      list.entries.unshift(entry);
-      touch(list);
-      render();
-      showToast('Entry added');
-    }
-
-    function updateEntry(entry, title, summary) {
-      entry.title = title;
-      entry.summary = summary;
-      touch(entry);
-      const list = selectedList();
-      touch(list);
-      render();
-      showToast('Entry updated');
-    }
-
-    function createSubEntry(entry, text, images, pinned) {
-      const sub = {
-        id: uuid(),
-        text,
-        images,
-        pinned,
-        createdAt: nowISO(),
-        updatedAt: nowISO()
-      };
-      entry.subEntries.unshift(sub);
-      touch(entry);
-      const list = selectedList();
-      touch(list);
-      render();
-      showToast('Sub entry added');
-    }
-
-    function updateSubEntry(sub, text, images, pinned) {
-      sub.text = text;
-      sub.images = images;
-      sub.pinned = pinned;
-      touch(sub);
-      const list = selectedList();
-      const entry = list.entries.find(e => e.subEntries.some(s => s.id === sub.id));
-      touch(entry);
-      touch(list);
-      render();
-      showToast('Sub entry updated');
-    }
-
-    function removeCurrentList() {
-      const list = selectedList();
-      if (!list) return;
-      if (!confirm(`Delete list "${list.name}" and everything inside it?`)) return;
-      state.lists = state.lists.filter(l => l.id !== list.id);
-      state.selectedListId = state.lists[0]?.id || null;
-      render();
-      showToast('List deleted');
-    }
-
-    els.btnAddList.addEventListener('click', () => openListModal());
-    els.btnAddEntry.addEventListener('click', () => openEntryModal());
-    els.btnEditList.addEventListener('click', () => {
-      const list = selectedList();
-      if (!list) return;
-      openListModal(list);
-    });
-    els.btnDeleteList.addEventListener('click', removeCurrentList);
-
-    els.btnExportAll.addEventListener('click', () => exportJson(currentExportPayload(true), 'offline-threads-tasks-all.json'));
-    els.btnExportList.addEventListener('click', () => {
-      const list = selectedList();
-      if (!list) return;
-      exportJson(currentExportPayload(false), `${safeFileName(list.name)}.json`);
-    });
-
-    els.btnImport.addEventListener('click', () => els.importFile.click());
-    els.importFile.addEventListener('change', async () => {
-      const file = els.importFile.files?.[0];
-      if (!file) return;
-      try {
-        await importJsonFile(file);
-      } catch (err) {
-        console.error(err);
-        alert('Import failed: ' + err.message);
-      } finally {
-        els.importFile.value = '';
-      }
-    });
-
-    els.searchBox.addEventListener('input', () => {
-      state.search = els.searchBox.value;
-      renderCurrent();
-    });
-
-    els.modalClose.addEventListener('click', closeModal);
-    els.modalCancel.addEventListener('click', closeModal);
-    els.modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === els.modalBackdrop) closeModal();
-    });
-    els.modalForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const currentModal = modalContext;
-      const list = selectedList();
-
-      if (currentModal?.type === 'list') {
-        const name = document.getElementById('listName')?.value.trim();
-        if (!name) return;
-        const existing = currentModal.listId ? state.lists.find(l => l.id === currentModal.listId) : null;
-        if (existing) updateListName(existing, name);
-        else createList(name);
-        closeModal();
-        return;
-      }
-
-      if (!list) {
-        showToast('Create a list first');
-        return;
-      }
-
-      if (currentModal?.type === 'entry') {
-        const title = getFormValue('entryTitle').trim();
-        const summary = getFormValue('entrySummary').trim();
-        if (!title) return;
-        const entry = list.entries.find(e => e.id === currentModal.entryId);
-        if (entry) updateEntry(entry, title, summary);
-        else createEntry(list, title, summary);
-        closeModal();
-        return;
-      }
-
-      if (currentModal?.type === 'sub') {
-        const entry = list.entries.find(e => e.id === currentModal.entryId);
-        if (!entry) return;
-        const text = getFormValue('subText').trim();
-        if (!text) return;
-        const pinned = document.getElementById('subPinned')?.checked || false;
-        const images = currentModal.imageState?.images || [];
-        const sub = entry.subEntries.find(s => s.id === currentModal.subId);
-        if (sub) updateSubEntry(sub, text, images, pinned);
-        else createSubEntry(entry, text, images, pinned);
-        closeModal();
-        return;
-      }
-    });
-
-    els.viewerClose.addEventListener('click', closeImageViewer);
-    els.viewer.addEventListener('click', (e) => {
-      if (e.target === els.viewer) closeImageViewer();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (els.viewer.classList.contains('show')) closeImageViewer();
-        else if (els.modalBackdrop.classList.contains('show')) closeModal();
-      }
-    });
-
-    function safeFileName(name) {
-      return String(name || 'list').replace(/[\\/:*?"<>|]+/g, '-').trim().replace(/\s+/g, '_') || 'list';
-    }
-
-    async function boot() {
-      try {
-        const saved = await loadState();
-        if (saved && Array.isArray(saved.lists)) {
-          state.lists = saved.lists;
-          state.selectedListId = saved.selectedListId || saved.lists[0]?.id || null;
-          state.search = saved.search || '';
-          els.searchBox.value = state.search;
-        } else if (!saved) {
-          const starter = {
-            id: uuid(),
-            name: 'Today',
-            createdAt: nowISO(),
-            updatedAt: nowISO(),
-            entries: []
-          };
-          state.lists.push(starter);
-          state.selectedListId = starter.id;
-        }
-      } catch (err) {
-        console.error(err);
-        const starter = {
-          id: uuid(),
-          name: 'Today',
-          createdAt: nowISO(),
-          updatedAt: nowISO(),
-          entries: []
-        };
-        state.lists.push(starter);
-        state.selectedListId = starter.id;
-      }
-      render();
-    }
-
-    window.addEventListener('beforeunload', () => {
-      state.search = els.searchBox.value;
-      saveState().catch(() => {});
-    });
-
-    boot();
-  </script>
+function boot(){
+  const saved = loadState();
+  if (saved && Array.isArray(saved.lists)){
+    state.lists = saved.lists || [];
+    state.selectedListId = saved.selectedListId || state.lists[0]?.id || null;
+    state.search = saved.search || '';
+    els.searchBox.value = state.search;
+  } else {
+    const starter = { id:uuid(), name:'Today', createdAt:nowISO(), updatedAt:nowISO(), entries:[] };
+    state.lists = [starter];
+    state.selectedListId = starter.id;
+    saveState();
+  }
+  render();
+}
+window.addEventListener('beforeunload', () => {
+  state.search = els.searchBox.value;
+  saveState();
+});
+boot();
+</script>
 </body>
 </html>
