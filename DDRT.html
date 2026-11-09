@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DDRT v0.0.2.a (v26.06.04.22.23)</title>
+  <title>DDRT v0.0.3.a (v26.06.04.22.26)</title>
   <style>
     :root {
       --bg: #f5f7fb;
@@ -1400,41 +1400,43 @@
     els.modalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      if (modalContext?.type === 'list') {
+      const currentModal = modalContext;
+      const list = selectedList();
+
+      if (currentModal?.type === 'list') {
         const name = document.getElementById('listName')?.value.trim();
         if (!name) return;
-        const existing = state.lists.find(l => l.id === modalContext.listId);
+        const existing = currentModal.listId ? state.lists.find(l => l.id === currentModal.listId) : null;
         if (existing) updateListName(existing, name);
         else createList(name);
         closeModal();
         return;
       }
 
-      const list = selectedList();
       if (!list) {
         showToast('Create a list first');
         return;
       }
 
-      if (modalContext?.type === 'entry') {
+      if (currentModal?.type === 'entry') {
         const title = getFormValue('entryTitle').trim();
         const summary = getFormValue('entrySummary').trim();
         if (!title) return;
-        const entry = list.entries.find(e => e.id === modalContext.entryId);
+        const entry = list.entries.find(e => e.id === currentModal.entryId);
         if (entry) updateEntry(entry, title, summary);
         else createEntry(list, title, summary);
         closeModal();
         return;
       }
 
-      if (modalContext?.type === 'sub') {
-        const entry = list.entries.find(e => e.id === modalContext.entryId);
+      if (currentModal?.type === 'sub') {
+        const entry = list.entries.find(e => e.id === currentModal.entryId);
         if (!entry) return;
         const text = getFormValue('subText').trim();
         if (!text) return;
         const pinned = document.getElementById('subPinned')?.checked || false;
-        const images = modalContext.imageState?.images || [];
-        const sub = entry.subEntries.find(s => s.id === modalContext.subId);
+        const images = currentModal.imageState?.images || [];
+        const sub = entry.subEntries.find(s => s.id === currentModal.subId);
         if (sub) updateSubEntry(sub, text, images, pinned);
         else createSubEntry(entry, text, images, pinned);
         closeModal();
