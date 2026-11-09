@@ -3,121 +3,175 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DDRT v0.0.7.a (v26.06.04.23.09)</title>
+  <title>DDRT v0.0.8.a (v26.11.06.11.22)</title>
   <style>
+
     :root{
-      --bg:#f5f7fb; --panel:#fff; --panel-2:#f8fafc; --text:#1f2937; --muted:#6b7280;
-      --line:#dbe3ee; --accent:#2563eb; --danger:#dc2626; --shadow:0 10px 30px rgba(15,23,42,.08);
-      --radius:16px; --bubble:#eef4ff; --bubble-2:#ecfeff;
+      color-scheme:dark;
+      --bg:#111111; --panel:#141414; --panel-2:#191919; --text:#e8e8e8; --muted:#a4a4a4;
+      --line:#666666; --line-soft:#383838; --accent:#dedede; --danger:#f87171;
+      --shadow:none; --radius:22px; --bubble:#202020; --bubble-2:#242424;
     }
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0; background:var(--bg); color:var(--text); font:14px/1.35 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility}
-    button,input,textarea{font:inherit}
-    .app{height:100dvh; display:grid; grid-template-columns:280px 1fr; gap:10px; padding:10px}
-    .sidebar,.main{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; min-height:0}
-    .sidebar{display:flex; flex-direction:column}
-    .brand{padding:12px 12px 8px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#fbfdff)}
-    .brand h1{margin:0; font-size:.98rem; line-height:1.2}
-    .brand p{margin:4px 0 0; color:var(--muted); font-size:.84rem}
-    .sidebar-actions,.topbar,.entry-head,.sub-head,.modal-head,.modal-foot{display:flex; align-items:center; gap:10px}
-    .sidebar-actions{padding:8px; border-bottom:1px solid var(--line); flex-wrap:wrap}
-    .icon-btn,.primary-btn,.ghost-btn{border:0; border-radius:999px; padding:0; cursor:pointer; transition:transform .12s ease, background .12s ease; user-select:none}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+    button,input,textarea,select{font:inherit}
+    button{color:inherit}
+    .app{height:100dvh;display:grid;grid-template-columns:148px minmax(0,1fr);gap:8px;padding:12px 18px}
+    .sidebar,.main{background:var(--panel);border:2px solid var(--line);border-radius:25px;overflow:hidden;min-height:0}
+    .sidebar{display:flex;flex-direction:column;gap:8px;padding:7px}
+    .brand{min-height:53px;padding:7px 9px;border:2px solid var(--line);border-radius:15px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+    .brand h1{margin:0;font-size:1.35rem;letter-spacing:.02em;font-weight:800}
+    .brand p{display:none}
+    .brand .icon-btn{font-size:1.2rem;border:0;background:transparent}
+    .sidebar-actions{display:none}
+    .profile-panel,.list-panel{border:2px solid var(--line);border-radius:19px;padding:7px;min-height:0;display:flex;flex-direction:column}
+    .profile-panel{flex:0 0 auto;max-height:34%}
+    .list-panel{flex:1}
+    .section-head{display:flex;align-items:center;gap:5px;margin-bottom:5px}
+    .section-head select{width:100%;min-width:0;background:#1b1b1b;color:var(--text);border:1.5px solid var(--line);border-radius:9px;padding:4px 6px;outline:none}
+    .section-head .icon-btn{width:26px;height:26px;border-radius:8px}
+    .profile-list,.list-wrap{padding:0;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#777 transparent}
+    .profile-list{display:grid;gap:2px}
+    .list-wrap{flex:1}
+    .profile-item,.list-item{width:100%;text-align:left;border:1px solid transparent;background:transparent;padding:5px 4px;border-radius:9px;display:flex;align-items:center;gap:6px;cursor:pointer;margin:0;min-width:0}
+    .profile-item:hover,.list-item:hover{background:#202020}
+    .profile-item.active,.list-item.active{background:#292929;border-color:#777}
+    .select-dot{width:17px;height:17px;border:2px solid #bdbdbd;border-radius:50%;display:inline-grid;place-items:center;flex:0 0 auto}
+    .active .select-dot:after{content:"";width:8px;height:8px;border-radius:50%;background:#e6e6e6}
+    .nav-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;font-size:.88rem}
+    .pin-btn{border:0;background:transparent;padding:1px 2px;color:#858585;cursor:pointer;font-size:.8rem;line-height:1;flex:0 0 auto}
+    .pin-btn.pinned{color:#ff8278}
+    .list-item{padding:5px 4px}
+    .list-item .title{display:contents}
+    .list-item .meta{display:none}
+    .list-item .count{font-size:.7rem;color:var(--muted)}
+    .main{display:flex;flex-direction:column;min-width:0}
+    .topbar{padding:8px 12px;border-bottom:2px solid var(--line);display:grid;grid-template-columns:minmax(120px,1fr) minmax(180px,1.3fr) auto;align-items:center;gap:10px;min-height:58px}
+    .topbar .title{font-size:1.55rem;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .list-description{grid-column:1/3;grid-row:2;min-height:0;max-height:160px;resize:vertical;width:100%;background:transparent;color:var(--muted);border:0;outline:none;text-align:center;font-size:.78rem;line-height:1.3;padding:0 12px}
+    .list-description:empty{display:none}
+    .list-description:not(:placeholder-shown){display:block}
+    .topbar .search{grid-column:2;grid-row:1;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:#1b1b1b;color:var(--text);outline:none;min-width:0;width:100%}
+    .topbar .primary-btn{grid-column:3;grid-row:1;white-space:nowrap}
+    .topbar .title:has(+ .search){grid-column:1;grid-row:1}
+    .topbar .icon-btn{display:none}
+    .content{padding:12px;overflow:auto;min-height:0;flex:1}
+    .empty{height:100%;min-height:180px;display:grid;place-items:center;color:var(--muted);text-align:center;padding:24px}
+    .empty .box{max-width:420px;background:#181818;border:1px dashed var(--line);border-radius:18px;padding:22px}
+    .entry{background:#171717;border:1.5px solid var(--line);border-radius:17px;margin-bottom:11px;overflow:hidden}
+    .entry-head{padding:11px 12px 9px;align-items:flex-start;gap:12px;border-bottom:1px solid var(--line-soft);background:#191919;display:flex}
+    .entry-main{flex:1;min-width:0}
+    .entry-title{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0;font-size:1rem;font-weight:800}
+    .entry-summary{margin:6px 0 0;color:#c7c7c7;white-space:pre-wrap;line-height:1.45}
+    .meta-bar,.sub-meta{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 8px;border-radius:999px;background:#202020;border:1px solid var(--line-soft);color:var(--muted);font-size:.72rem;flex-wrap:wrap}
+    .entry-actions,.sub-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .entry-body{padding:9px}
+    .sub-list{display:grid;gap:8px;padding:2px}
+    .sub-item{border:1px solid var(--line-soft);border-radius:13px;overflow:hidden;background:#151515}
+    .sub-item.pinned{border-color:#a66b67}
+    .sub-head{padding:7px 9px;background:#191919;border-bottom:1px solid var(--line-soft);justify-content:space-between;align-items:flex-start;display:flex;gap:8px}
+    .sub-meta{margin:0}
+    .sub-bubble{margin:9px;padding:10px 12px;background:var(--bubble);border-radius:12px;white-space:pre-wrap;line-height:1.5;border:1px solid var(--line-soft);overflow-wrap:anywhere}
+    .sub-item.pinned .sub-bubble{background:var(--bubble-2);border-color:#5d514f}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,100px));gap:8px;padding:0 10px 10px}
+    .thumb{aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#202020;position:relative;cursor:pointer}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .thumb .x{position:absolute;top:5px;right:5px;width:23px;height:23px;border-radius:50%;border:0;background:rgba(0,0,0,.78);color:#fff;cursor:pointer}
+    .muted,.small{color:var(--muted)}
+    .icon-btn,.primary-btn,.ghost-btn{border:1px solid var(--line);border-radius:10px;padding:0;cursor:pointer;transition:background .12s ease,transform .12s ease;user-select:none;background:#1c1c1c;color:var(--text)}
     .icon-btn:active,.primary-btn:active,.ghost-btn:active{transform:scale(.98)}
-    .icon-btn{width:34px; height:34px; display:inline-grid; place-items:center; background:var(--panel-2); border:1px solid var(--line); color:var(--text); font-size:.98rem; flex:0 0 auto}
-    .primary-btn,.ghost-btn{padding:8px 11px; font-weight:600; border:1px solid transparent}
-    .primary-btn{background:var(--accent); color:#fff}
-    .ghost-btn{background:var(--panel-2); color:var(--text); border-color:var(--line)}
-    .ghost-btn.danger{background:#fee2e2; color:var(--danger); border-color:#fecaca}
-    .list-wrap{padding:8px; overflow:auto; min-height:0; flex:1}
-    .list-item{width:100%; text-align:left; border:1px solid transparent; background:transparent; padding:9px 10px; border-radius:14px; display:grid; gap:4px; cursor:pointer; margin-bottom:8px}
-    .list-item:hover{background:#f8fbff}
-    .list-item.active{background:#eaf2ff; border-color:#cfe0ff}
-    .list-item .title{font-weight:700; display:flex; align-items:center; justify-content:space-between; gap:10px}
-    .list-item .meta{color:var(--muted); font-size:.76rem}
-    .main{display:flex; flex-direction:column; min-width:0}
-    .topbar{padding:8px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#fff,#fbfdff); flex-wrap:wrap}
-    .topbar .title{font-size:.98rem; font-weight:800; margin-right:auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-    .topbar .search{flex:1 1 150px; min-width:120px; max-width:260px; padding:7px 11px; border-radius:999px; border:1px solid var(--line); background:var(--panel-2); outline:none}
-    .content{padding:10px; overflow:auto; min-height:0; flex:1}
-    .empty{height:100%; display:grid; place-items:center; color:var(--muted); text-align:center; padding:24px}
-    .empty .box{max-width:360px; background:#fff; border:1px dashed var(--line); border-radius:18px; padding:22px; box-shadow:var(--shadow)}
-    .entry{background:var(--panel); border:1px solid var(--line); border-radius:16px; box-shadow:0 6px 18px rgba(15,23,42,.05); margin-bottom:10px; overflow:hidden}
-    .entry-head{padding:10px 10px 8px; align-items:flex-start; gap:12px; border-bottom:1px solid #eef2f7; background:linear-gradient(180deg,#fff,#fbfdff)}
-    .entry-main{flex:1; min-width:0}
-    .entry-title{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin:0; font-size:.93rem; font-weight:800}
-    .entry-summary{margin:6px 0 0; color:#374151; white-space:pre-wrap; line-height:1.45}
-    .meta-bar{display:inline-flex; align-items:center; gap:6px; margin-top:6px; padding:5px 8px; border-radius:999px; background:#f8fafc; border:1px solid var(--line); color:var(--muted); font-size:.72rem; flex-wrap:wrap}
-    .entry-actions,.sub-actions{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
-    .entry-body{padding:8px 8px 10px}
-    .sub-list{display:grid; gap:8px; padding:4px 4px 0}
-    .sub-item{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#fff}
-    .sub-item.pinned{border-color:#93c5fd; box-shadow:0 0 0 1px rgba(37,99,235,.08) inset}
-    .sub-head{padding:8px 10px; background:linear-gradient(180deg,#fff,#fbfdff); border-bottom:1px solid #eef2f7; justify-content:space-between; align-items:flex-start}
-    .sub-meta{display:inline-flex; align-items:center; gap:6px; margin-bottom:6px; padding:4px 8px; border-radius:999px; background:#f8fafc; border:1px solid var(--line); color:var(--muted); font-size:.74rem; flex-wrap:wrap}
-    .sub-bubble{margin:10px; padding:10px 12px; background:var(--bubble); border-radius:16px; white-space:pre-wrap; line-height:1.45; border:1px solid #dbeafe}
-    .sub-item.pinned .sub-bubble{background:var(--bubble-2); border-color:#bbf7d0}
-    .thumbs{display:grid; grid-template-columns:repeat(auto-fill,minmax(72px,1fr)); gap:8px; padding:0 12px 12px}
-    .thumb{aspect-ratio:1; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#f8fafc; position:relative; cursor:pointer}
-    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
-    .thumb .x{position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:999px; border:0; background:rgba(15,23,42,.72); color:#fff; cursor:pointer; line-height:1}
-    .muted{color:var(--muted)}
-    .modal-backdrop{position:fixed; inset:0; background:rgba(15,23,42,.55); display:none; place-items:center; padding:14px; z-index:40}
+    .icon-btn{width:32px;height:32px;display:inline-grid;place-items:center;font-size:1rem;flex:0 0 auto}
+    .primary-btn,.ghost-btn{padding:7px 11px;font-weight:600}
+    .primary-btn{background:#e3e3e3;color:#151515;border-color:#e3e3e3}
+    .ghost-btn.danger{color:#ff9b9b;border-color:#764747}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;place-items:center;padding:14px;z-index:40}
     .modal-backdrop.show{display:grid}
-    .modal{width:min(680px,100%); max-height:min(92vh,900px); overflow:auto; background:#fff; border-radius:24px; box-shadow:0 24px 70px rgba(15,23,42,.28); border:1px solid #e5e7eb}
-    .modal-head{padding:12px 14px; border-bottom:1px solid var(--line); justify-content:space-between}
-    .modal-head h2{margin:0; font-size:1.05rem}
-    .modal-body{padding:12px 14px 14px; display:grid; gap:14px}
-    .field{display:grid; gap:6px}
-    .field label{font-weight:700; font-size:.84rem}
-    .field input[type="text"], .field textarea{width:100%; border:1px solid var(--line); border-radius:12px; padding:9px 11px; outline:none; background:#fff; color:var(--text)}
-    .field textarea{min-height:90px; resize:vertical}
-    .field input[type="text"]:focus, .field textarea:focus{border-color:#9cc2ff; box-shadow:0 0 0 4px rgba(37,99,235,.08)}
-    .images-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
-    .preview-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:10px}
-    .preview{position:relative; border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#f8fafc; aspect-ratio:1}
-    .preview img{width:100%; height:100%; object-fit:cover; display:block}
-    .preview button{position:absolute; top:6px; right:6px; width:24px; height:24px; border-radius:999px; border:0; background:rgba(15,23,42,.72); color:#fff; cursor:pointer}
-    .modal-foot{padding:10px 14px 12px; border-top:1px solid var(--line); justify-content:space-between; flex-wrap:wrap}
-    .small{font-size:.74rem; color:var(--muted)}
-    .toast{position:fixed; left:50%; bottom:16px; transform:translateX(-50%); background:rgba(17,24,39,.94); color:#fff; padding:10px 14px; border-radius:999px; z-index:60; display:none; box-shadow:0 12px 30px rgba(0,0,0,.22); max-width:calc(100vw - 24px); text-align:center}
+    .modal{width:min(680px,100%);max-height:min(92vh,900px);overflow:auto;background:#191919;color:var(--text);border-radius:20px;box-shadow:0 24px 70px rgba(0,0,0,.5);border:1px solid var(--line)}
+    .modal-head{padding:12px 14px;border-bottom:1px solid var(--line-soft);justify-content:space-between;display:flex;align-items:center}
+    .modal-head h2{margin:0;font-size:1.05rem}
+    .modal-body{padding:14px;display:grid;gap:14px}
+    .field{display:grid;gap:6px}
+    .field label{font-weight:700;font-size:.84rem}
+    .field input[type="text"],.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;outline:none;background:#111;color:var(--text)}
+    .field textarea{min-height:90px;resize:vertical}
+    .field input:focus,.field textarea:focus{border-color:#aaa}
+    .images-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+    .preview{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#202020;aspect-ratio:1}
+    .preview img{width:100%;height:100%;object-fit:cover;display:block}
+    .preview button{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.8);color:#fff;cursor:pointer}
+    .modal-foot{padding:10px 14px 12px;border-top:1px solid var(--line-soft);justify-content:space-between;flex-wrap:wrap;display:flex;align-items:center}
+    .toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:rgba(235,235,235,.96);color:#111;padding:10px 14px;border-radius:999px;z-index:60;display:none;max-width:calc(100vw - 24px);text-align:center}
     .toast.show{display:block}
-    .viewer{position:fixed; inset:0; background:rgba(0,0,0,.86); display:none; place-items:center; z-index:70; padding:12px}
+    .viewer{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;place-items:center;z-index:70;padding:12px}
     .viewer.show{display:grid}
-    .viewer img{max-width:100%; max-height:100%; object-fit:contain; border-radius:12px; box-shadow:0 24px 80px rgba(0,0,0,.45); background:#111}
-    .viewer .close{position:absolute; top:14px; right:14px; width:44px; height:44px; border-radius:999px; border:0; color:#fff; background:rgba(255,255,255,.12); font-size:1.2rem; cursor:pointer}
-    .sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0}
-    @media (max-width:900px){
-      .app{grid-template-columns:1fr; grid-template-rows:auto minmax(0,1fr); padding:8px; gap:8px}
-      .sidebar{order:1; max-height:36dvh; position:sticky; top:8px; z-index:5}
-      .main{order:2; min-height:0}
-      .topbar{gap:6px}
-      .topbar .search{max-width:none}
-      .topbar .title{white-space:normal}
+    .viewer img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}
+    .viewer .close{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:0;color:#fff;background:rgba(255,255,255,.12);font-size:1.2rem;cursor:pointer}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:700px){
+      .app{height:100dvh;grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);padding:7px;gap:7px}
+      .sidebar{order:1;max-height:39dvh;position:relative;z-index:5;display:grid;grid-template-columns:110px minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:6px}
+      .brand{grid-column:1;grid-row:1;min-height:44px;padding:5px;flex-direction:column;justify-content:center}
+      .brand h1{font-size:1.05rem}
+      .brand .icon-btn{width:25px;height:22px}
+      .profile-panel{grid-column:2;grid-row:1;max-height:none;min-height:44px;padding:4px}
+      .profile-panel .profile-list{display:flex;flex-wrap:wrap;overflow:auto}
+      .profile-item{width:auto;flex:0 0 auto;padding:3px 5px}
+      .profile-item .pin-btn{display:none}
+      .list-panel{grid-column:1/3;grid-row:2;padding:5px;min-height:0}
+      .list-panel .section-head{margin-bottom:2px}
+      .list-wrap{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden}
+      .list-item{width:auto;flex:0 0 auto;min-width:82px;justify-content:flex-start;padding:5px 8px}
+      .list-item .count{display:none}
+      .main{order:2;min-height:0}
+      .topbar{grid-template-columns:minmax(0,1fr) auto;gap:7px;padding:8px;min-height:0}
+      .topbar .title{grid-column:1;grid-row:1;font-size:1.2rem}
+      .topbar .search{grid-column:1;grid-row:2;max-width:none;width:100%}
+      .topbar .primary-btn{grid-column:2;grid-row:1/3}
+      .list-description{grid-column:1/3;grid-row:3;text-align:left;padding:3px 2px}
+      .content{padding:8px}
+      .entry-head{gap:7px}
+      .entry-actions,.sub-actions{gap:4px}
+      .icon-btn{width:29px;height:29px}
     }
+
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="brand">
-      <h1>Offline Threads Tasks</h1>
-      <p>Lists → entries → sub entries. Stored locally on your device.</p>
+      <h1>DDRT</h1>
+      <button class="icon-btn" id="btnSettings" title="Settings" aria-label="Settings">⚙</button>
     </div>
+    <section class="profile-panel">
+      <div class="section-head">
+        <select id="profileSelect" aria-label="Profiles"></select>
+        <button class="icon-btn" id="btnAddProfile" title="Add profile" aria-label="Add profile">＋</button>
+      </div>
+      <div class="profile-list" id="profileList"></div>
+    </section>
+    <section class="list-panel">
+      <div class="section-head">
+        <span class="nav-name">Lists</span>
+        <button class="icon-btn" id="btnAddList" title="Add list" aria-label="Add list">＋</button>
+      </div>
+      <div class="list-wrap" id="listWrap"></div>
+    </section>
     <div class="sidebar-actions">
-      <button class="icon-btn" id="btnAddList" title="Add list" aria-label="Add list">＋</button>
       <button class="ghost-btn" id="btnExportAll">Export all</button>
       <button class="ghost-btn" id="btnExportList">Export list</button>
       <button class="ghost-btn" id="btnImport">Import</button>
       <input class="sr-only" type="file" id="importFile" accept="application/json" />
     </div>
-    <div class="list-wrap" id="listWrap"></div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <div class="title" id="currentListTitle">No list selected</div>
       <input class="search" id="searchBox" type="text" placeholder="Search entries and sub entries" />
-      <button class="icon-btn" id="btnAddEntry" title="Add entry" aria-label="Add entry">＋</button>
+      <button class="primary-btn" id="btnAddEntry" title="Add entry">＋ Add new entry</button>
+      <textarea class="list-description" id="listDescription" placeholder="List description..." aria-label="List description"></textarea>
       <button class="icon-btn" id="btnEditList" title="Edit current list" aria-label="Edit current list">✎</button>
       <button class="icon-btn" id="btnDeleteList" title="Delete current list" aria-label="Delete current list">🗑</button>
     </div>
@@ -154,9 +208,14 @@
 <script>
 const STORAGE_KEY = 'offline_threads_tasks_state_v3';
 
-const state = { lists: [], selectedListId: null, search: '' };
+const state = { lists: [], profiles: [], selectedProfileId: null, selectedListId: null, search: '' };
 const els = {
   listWrap: document.getElementById('listWrap'),
+  profileList: document.getElementById('profileList'),
+  profileSelect: document.getElementById('profileSelect'),
+  btnAddProfile: document.getElementById('btnAddProfile'),
+  btnSettings: document.getElementById('btnSettings'),
+  listDescription: document.getElementById('listDescription'),
   content: document.getElementById('content'),
   currentListTitle: document.getElementById('currentListTitle'),
   searchBox: document.getElementById('searchBox'),
@@ -214,11 +273,34 @@ function saveState(){
 }
 function touch(obj){ obj.updatedAt = nowISO(); }
 function selectedList(){ return state.lists.find(l => l.id === state.selectedListId) || null; }
-function ensureSelection(){
-  if (!state.selectedListId && state.lists.length) state.selectedListId = state.lists[0].id;
-  if (state.selectedListId && !state.lists.some(l => l.id === state.selectedListId)) state.selectedListId = state.lists[0]?.id || null;
+function selectedProfile(){ return state.profiles.find(p => p.id === state.selectedProfileId) || null; }
+function profileLists(profile=selectedProfile()){
+  const ids = new Set(profile?.listIds || []);
+  return state.lists.filter(l => ids.has(l.id));
 }
-function sortedLists(){ return [...state.lists].sort((a,b)=> new Date(b.updatedAt) - new Date(a.updatedAt)); }
+function ensureSelection(){
+  if (!state.profiles.length){
+    const profile = { id:uuid(), name:'Personal', pinned:true, listIds:state.lists.map(l=>l.id), createdAt:nowISO(), updatedAt:nowISO() };
+    state.profiles = [profile];
+  }
+  state.profiles.forEach(p => { if (!Array.isArray(p.listIds)) p.listIds = []; });
+  const assigned = new Set(state.profiles.flatMap(p => p.listIds));
+  state.lists.forEach(l => {
+    if (!assigned.has(l.id)){
+      const target = state.profiles[0];
+      target.listIds.push(l.id);
+      assigned.add(l.id);
+    }
+  });
+  state.profiles.forEach(p => p.listIds = p.listIds.filter(id => state.lists.some(l=>l.id===id)));
+  if (!state.selectedProfileId || !state.profiles.some(p=>p.id===state.selectedProfileId))
+    state.selectedProfileId = state.profiles[0]?.id || null;
+  const visible = profileLists();
+  if (!visible.some(l=>l.id===state.selectedListId))
+    state.selectedListId = visible[0]?.id || null;
+}
+function sortedProfiles(){ return [...state.profiles].sort((a,b)=>Number(!!b.pinned)-Number(!!a.pinned) || new Date(a.createdAt)-new Date(b.createdAt)); }
+function sortedLists(){ return [...profileLists()].sort((a,b)=>Number(!!b.pinned)-Number(!!a.pinned) || new Date(b.updatedAt)-new Date(a.updatedAt)); }
 function sortedEntries(list){
   const q = state.search.trim().toLowerCase();
   let arr = [...(list?.entries || [])].sort((a,b)=> new Date(b.updatedAt) - new Date(a.updatedAt));
@@ -237,30 +319,70 @@ function sortedSubEntries(entry){
 }
 function render(){
   ensureSelection();
+  renderProfiles();
   renderLists();
   renderCurrent();
   saveState();
 }
+function renderProfiles(){
+  const profiles = sortedProfiles();
+  els.profileSelect.innerHTML = profiles.map(p=>`<option value="${escapeHtml(p.id)}">${escapeHtml(p.name)}</option>`).join('');
+  els.profileSelect.value = state.selectedProfileId || '';
+  els.profileList.innerHTML = profiles.map(profile=>`
+    <div class="profile-item ${profile.id===state.selectedProfileId?'active':''}" data-profile-id="${escapeHtml(profile.id)}">
+      <span class="select-dot"></span>
+      <span class="nav-name">${escapeHtml(profile.name)}</span>
+      <button class="pin-btn" data-profile-edit="${escapeHtml(profile.id)}" title="Edit profile">✎</button>
+      <button class="pin-btn ${profile.pinned?'pinned':''}" data-profile-pin="${escapeHtml(profile.id)}" title="${profile.pinned?'Unpin':'Pin'} profile">📌</button>
+    </div>
+  `).join('');
+  els.profileList.querySelectorAll('.profile-item').forEach(item=>item.addEventListener('click',e=>{
+    if(e.target.closest('[data-profile-pin]')) return;
+    state.selectedProfileId=item.dataset.profileId;
+    state.selectedListId=profileLists(selectedProfile())[0]?.id||null;
+    render();
+  }));
+  els.profileList.querySelectorAll('[data-profile-edit]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const p=state.profiles.find(x=>x.id===btn.dataset.profileEdit); if(p)openProfileModal(p);
+  }));
+  els.profileList.querySelectorAll('[data-profile-pin]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const p=state.profiles.find(x=>x.id===btn.dataset.profilePin); if(!p)return;
+    p.pinned=!p.pinned; touch(p); render();
+  }));
+}
 function renderLists(){
   const lists = sortedLists();
   if (!lists.length){
-    els.listWrap.innerHTML = `<div class="empty" style="height:auto; min-height:280px;"><div class="box"><h3 style="margin-top:0;">No lists yet</h3><p>Create your first list with the + button.</p></div></div>`;
+    els.listWrap.innerHTML = `<div class="empty" style="height:auto;min-height:90px;padding:8px;"><div class="muted">No lists in this profile yet.</div></div>`;
     return;
   }
   els.listWrap.innerHTML = lists.map(list => `
-    <button class="list-item ${list.id === state.selectedListId ? 'active' : ''}" data-id="${list.id}">
-      <div class="title"><span>${escapeHtml(list.name)}</span><span class="muted">${(list.entries||[]).length}</span></div>
-      <div class="meta">Updated ${escapeHtml(formatDateTime(list.updatedAt))}</div>
-    </button>
+    <div class="list-item ${list.id === state.selectedListId ? 'active' : ''}" data-id="${escapeHtml(list.id)}">
+      <span class="select-dot"></span>
+      <span class="nav-name">${escapeHtml(list.name)}</span>
+      <span class="count">${(list.entries||[]).length}</span>
+      <button class="pin-btn ${list.pinned?'pinned':''}" data-list-pin="${escapeHtml(list.id)}" title="${list.pinned?'Unpin':'Pin'} list">📌</button>
+    </div>
   `).join('');
-  els.listWrap.querySelectorAll('.list-item').forEach(btn => btn.addEventListener('click', ()=>{
-    state.selectedListId = btn.dataset.id;
+  els.listWrap.querySelectorAll('.list-item').forEach(item => item.addEventListener('click',e=>{
+    if(e.target.closest('[data-list-pin]')) return;
+    state.selectedListId=item.dataset.id;
     render();
+  }));
+  els.listWrap.querySelectorAll('[data-list-pin]').forEach(btn=>btn.addEventListener('click',e=>{
+    e.stopPropagation();
+    const list=state.lists.find(l=>l.id===btn.dataset.listPin); if(!list)return;
+    list.pinned=!list.pinned; touch(list); render();
   }));
 }
 function renderCurrent(){
   const list = selectedList();
   els.currentListTitle.textContent = list ? list.name : 'No list selected';
+  els.listDescription.value = list?.description || '';
+  els.listDescription.style.height='auto';
+  if(list && els.listDescription.value) els.listDescription.style.height=Math.min(160,els.listDescription.scrollHeight)+'px';
   els.btnAddEntry.disabled = !list;
   els.btnEditList.disabled = !list;
   els.btnDeleteList.disabled = !list;
@@ -359,12 +481,75 @@ function closeModal(){
   els.modalBody.innerHTML = '';
   modalContext = null;
 }
+function openProfileModal(profile=null){
+  modalContext={type:'profile',profileId:profile?.id||null};
+  openModal(profile?'Edit profile':'Add profile',`
+    <div class="field"><label for="profileName">Profile name</label>
+      <input id="profileName" type="text" maxlength="80" placeholder="e.g. Personal, Work" value="${escapeHtml(profile?.name||'')}" required />
+    </div>
+    ${profile?'<button class="ghost-btn danger" type="button" id="deleteProfileAction">Delete profile</button>':''}
+  `,'Profiles contain their own collections of lists.');
+  document.getElementById('deleteProfileAction')?.addEventListener('click',()=>deleteProfile(profile.id));
+  setTimeout(()=>document.getElementById('profileName')?.focus(),0);
+}
+function deleteProfile(profileId){
+  if(state.profiles.length<=1){showToast('Keep at least one profile');return;}
+  const profile=state.profiles.find(p=>p.id===profileId); if(!profile)return;
+  if(!confirm(`Delete profile "${profile.name}"? Its lists will be moved to another profile.`))return;
+  const target=state.profiles.find(p=>p.id!==profileId);
+  target.listIds=[...(target.listIds||[]),...(profile.listIds||[])];
+  touch(target);
+  state.profiles=state.profiles.filter(p=>p.id!==profileId);
+  state.selectedProfileId=target.id;
+  state.selectedListId=profileLists(target)[0]?.id||null;
+  closeModal();render();showToast('Profile deleted; lists preserved');
+}
+function openSettings(){
+  modalContext={type:'settings'};
+  openModal('DDRT settings',`
+    <div class="field"><label>Data</label>
+      <div class="images-row">
+        <button class="ghost-btn" type="button" id="settingsExportAll">Export / backup all</button>
+        <button class="ghost-btn" type="button" id="settingsImport">Import backup</button>
+        <button class="ghost-btn danger" type="button" id="settingsReset">Reset application data</button>
+      </div>
+    </div>
+    <div class="field"><label>Appearance</label>
+      <div class="images-row"><span class="small">Theme</span><button class="ghost-btn" type="button" id="themeDark">Dark</button><button class="ghost-btn" type="button" id="themeLight">Light</button></div>
+    </div>
+    <div class="field"><label>About</label><div class="small">DDRT · Offline Threads Tasks</div>
+      <div class="images-row"><span class="small">Source repository: not configured</span><span class="small">Credits: made for personal offline use</span></div>
+    </div>
+  `,'Your data stays in this browser unless you export it.');
+  document.getElementById('settingsExportAll').onclick=exportAll;
+  document.getElementById('settingsImport').onclick=()=>{closeModal();els.importFile.click();};
+  document.getElementById('settingsReset').onclick=()=>{
+    if(!confirm('Reset DDRT and permanently delete all locally stored data? Export a backup first if needed.'))return;
+    localStorage.removeItem(STORAGE_KEY);
+    state.lists=[];state.profiles=[];state.selectedListId=null;state.selectedProfileId=null;
+    const p={id:uuid(),name:'Personal',pinned:true,listIds:[],createdAt:nowISO(),updatedAt:nowISO()};
+    state.profiles=[p];createList('Today');closeModal();showToast('Application reset');
+  };
+  document.getElementById('themeDark').onclick=()=>setTheme('dark');
+  document.getElementById('themeLight').onclick=()=>setTheme('light');
+}
+function setTheme(theme){
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.style.colorScheme=theme;
+  const light=theme==='light';
+  const vars=light?{'--bg':'#f1f1f1','--panel':'#fafafa','--panel-2':'#eeeeee','--text':'#202020','--muted':'#666666','--line':'#999999','--line-soft':'#dddddd','--bubble':'#eeeeee','--bubble-2':'#e8eeee'}:{'--bg':'#111111','--panel':'#141414','--panel-2':'#191919','--text':'#e8e8e8','--muted':'#a4a4a4','--line':'#666666','--line-soft':'#383838','--bubble':'#202020','--bubble-2':'#242424'};
+  Object.entries(vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+  localStorage.setItem('ddrt_theme',theme);
+}
 function openListModal(list=null){
   modalContext = { type:'list', listId:list?.id || null };
   openModal(list ? 'Edit list' : 'Add list', `
     <div class="field">
       <label for="listName">List name</label>
       <input id="listName" type="text" maxlength="120" placeholder="e.g. Work, Games, School" value="${escapeHtml(list?.name || '')}" required />
+    </div>
+    <div class="field"><label for="listDescriptionEdit">Description</label>
+      <textarea id="listDescriptionEdit" maxlength="1200" placeholder="A short description for this list">${escapeHtml(list?.description || '')}</textarea>
     </div>
   `, 'Each list is its own container for threads.');
   setTimeout(()=>document.getElementById('listName')?.focus(),0);
@@ -454,7 +639,7 @@ async function setupImagePreview(existingSub=null){
     }
     fileInput.value = '';
     draw();
-  }, { once:true });
+  });
 
   draw();
   modalContext.imageState = { get images(){ return [...existing, ...newImages]; } };
@@ -465,9 +650,12 @@ function getFormValue(id){ return document.getElementById(id)?.value || ''; }
 function getEntry(list, id){ return list?.entries.find(e => e.id === id) || null; }
 function getSub(entry, id){ return entry?.subEntries.find(s => s.id === id) || null; }
 
-function createList(name){
-  const list = { id:uuid(), name, createdAt:nowISO(), updatedAt:nowISO(), entries:[] };
+function createList(name, description=''){
+  if(!state.profiles.length) state.profiles=[{id:uuid(),name:'Personal',pinned:true,listIds:[],createdAt:nowISO(),updatedAt:nowISO()}];
+  if(!state.selectedProfileId) state.selectedProfileId=state.profiles[0].id;
+  const list = { id:uuid(), name, description, pinned:false, createdAt:nowISO(), updatedAt:nowISO(), entries:[] };
   state.lists.unshift(list);
+  const profile=selectedProfile()||state.profiles[0]; if(profile){profile.listIds=profile.listIds||[];profile.listIds.unshift(list.id);touch(profile);}
   state.selectedListId = list.id;
   render();
   showToast('List added');
@@ -507,6 +695,7 @@ function togglePin(entryId, subId){
   const list = selectedList(); if (!list) return;
   const entry = getEntry(list, entryId); const sub = getSub(entry, subId); if (!sub) return;
   sub.pinned = !sub.pinned;
+  touch(sub); touch(entry); touch(list);
   render();
   showToast(sub.pinned ? 'Pinned' : 'Unpinned');
 }
@@ -534,17 +723,21 @@ async function exportJson(obj, filename){
   URL.revokeObjectURL(url);
   showToast('Download started');
 }
-function exportAll(){ exportJson({ app:'Offline Threads Tasks', exportedAt:nowISO(), lists: deepCopy(state.lists) }, 'offline-threads-tasks-all.json'); }
+function exportAll(){ exportJson({ app:'DDRT', exportedAt:nowISO(), profiles:deepCopy(state.profiles), lists: deepCopy(state.lists) }, 'ddrt-backup.json'); }
 function exportCurrent(){ const list = selectedList(); if (list) exportJson({ app:'Offline Threads Tasks', exportedAt:nowISO(), list: deepCopy(list) }, `${safeFileName(list.name)}.json`); }
 function safeFileName(name){ return String(name || 'list').replace(/[\\/:*?"<>|]+/g, '-').trim().replace(/\s+/g, '_') || 'list'; }
 async function importJsonFile(file){
   const data = JSON.parse(await file.text());
   if (Array.isArray(data.lists)){
     state.lists = data.lists;
-    state.selectedListId = state.lists[0]?.id || null;
+    state.profiles = Array.isArray(data.profiles) ? data.profiles : [];
+    if (!state.profiles.length) state.profiles=[{id:uuid(),name:'Personal',pinned:true,listIds:state.lists.map(l=>l.id),createdAt:nowISO(),updatedAt:nowISO()}];
+    state.selectedProfileId=state.profiles[0]?.id||null;
+    state.selectedListId = state.profiles[0]?.listIds?.[0] || state.lists[0]?.id || null;
   }else if (data.list && data.list.id){
     const idx = state.lists.findIndex(l => l.id === data.list.id);
     if (idx >= 0) state.lists[idx] = data.list; else state.lists.unshift(data.list);
+    const p=selectedProfile()||state.profiles[0]; if(p){p.listIds=p.listIds||[];if(!p.listIds.includes(data.list.id))p.listIds.unshift(data.list.id);}
     state.selectedListId = data.list.id;
   }else throw new Error('Unsupported file format');
   render(); showToast('Imported');
@@ -559,6 +752,10 @@ function removeCurrentList(){
 }
 
 els.btnAddList.addEventListener('click', () => openListModal());
+els.btnAddProfile.addEventListener('click',()=>openProfileModal());
+els.btnSettings.addEventListener('click',openSettings);
+els.profileSelect.addEventListener('change',()=>{state.selectedProfileId=els.profileSelect.value;state.selectedListId=profileLists()[0]?.id||null;render();});
+els.listDescription.addEventListener('input',()=>{const list=selectedList();if(!list)return;list.description=els.listDescription.value;els.listDescription.style.height='auto';els.listDescription.style.height=Math.min(160,els.listDescription.scrollHeight)+'px';touch(list);saveState();});
 els.btnAddEntry.addEventListener('click', () => openEntryModal());
 els.btnEditList.addEventListener('click', openListForEdit);
 els.btnDeleteList.addEventListener('click', removeCurrentList);
@@ -583,11 +780,19 @@ els.modalForm.addEventListener('submit', e => {
   const current = modalContext;
   const list = selectedList();
 
+  if (current?.type === 'profile'){
+    const name=document.getElementById('profileName')?.value.trim(); if(!name)return;
+    const existing=current.profileId?state.profiles.find(p=>p.id===current.profileId):null;
+    if(existing){existing.name=name;touch(existing);}
+    else {const p={id:uuid(),name,pinned:false,listIds:[],createdAt:nowISO(),updatedAt:nowISO()};state.profiles.push(p);state.selectedProfileId=p.id;state.selectedListId=null;}
+    closeModal();render();showToast(existing?'Profile updated':'Profile added');return;
+  }
   if (current?.type === 'list'){
     const name = document.getElementById('listName')?.value.trim();
+    const description = document.getElementById('listDescriptionEdit')?.value.trim() || '';
     if (!name) return;
     const existing = current.listId ? state.lists.find(l => l.id === current.listId) : null;
-    if (existing) updateListName(existing, name); else createList(name);
+    if (existing) { updateListName(existing, name); existing.description=description; touch(existing); render(); } else createList(name, description);
     closeModal();
     return;
   }
@@ -623,6 +828,8 @@ function boot(){
   if (saved && Array.isArray(saved.lists)){
     state.lists = saved.lists || [];
     state.selectedListId = saved.selectedListId || state.lists[0]?.id || null;
+    state.profiles = Array.isArray(saved.profiles) ? saved.profiles : [];
+    state.selectedProfileId = saved.selectedProfileId || state.profiles[0]?.id || null;
     state.search = saved.search || '';
     els.searchBox.value = state.search;
   } else {
@@ -631,6 +838,7 @@ function boot(){
     state.selectedListId = starter.id;
     saveState();
   }
+  const savedTheme=localStorage.getItem('ddrt_theme'); if(savedTheme)setTheme(savedTheme);
   render();
 }
 window.addEventListener('beforeunload', () => {
