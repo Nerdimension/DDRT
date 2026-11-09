@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DDRT v0.0.1.a (v26.06.04.22.15)</title>
+  <title>DDRT v0.0.2.a (v26.06.04.22.23)</title>
   <style>
     :root {
       --bg: #f5f7fb;
@@ -700,7 +700,6 @@
 
     let dbPromise = null;
     let modalContext = null;
-    let listEditDraft = null;
 
     function uuid() {
       return (crypto && crypto.randomUUID) ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(16).slice(2);
@@ -994,11 +993,10 @@
       els.modalForm.reset();
       els.modalBody.innerHTML = '';
       modalContext = null;
-      listEditDraft = null;
     }
 
     function openListModal(list = null) {
-      listEditDraft = list;
+      modalContext = { type: 'list', listId: list?.id || null };
       openModal(
         list ? 'Edit list' : 'Add list',
         `
@@ -1014,7 +1012,10 @@
 
     function openEntryModal(entryId = null) {
       const list = selectedList();
-      if (!list) return;
+      if (!list) {
+        showToast('Create a list first');
+        return;
+      }
       const entry = list.entries.find(e => e.id === entryId) || null;
       modalContext = { type: 'entry', entryId };
       openModal(
@@ -1398,15 +1399,20 @@
     });
     els.modalForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const list = selectedList();
-      if (!list && modalContext?.type !== 'list') return;
 
-      if (listEditDraft !== null) {
+      if (modalContext?.type === 'list') {
         const name = document.getElementById('listName')?.value.trim();
         if (!name) return;
-        if (listEditDraft) updateListName(listEditDraft, name);
+        const existing = state.lists.find(l => l.id === modalContext.listId);
+        if (existing) updateListName(existing, name);
         else createList(name);
         closeModal();
+        return;
+      }
+
+      const list = selectedList();
+      if (!list) {
+        showToast('Create a list first');
         return;
       }
 
