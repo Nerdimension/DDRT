@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>DDRT v0.0.4.a (v26.06.04.22.36)</title>
+  <title>DDRT v0.0.5.a (v26.06.04.22.48)</title>
   <style>
     :root {
       --bg: #f5f7fb;
@@ -1188,9 +1188,6 @@
       const sub = getSub(entry, subId);
       if (!sub) return;
       sub.pinned = !sub.pinned;
-      touch(sub);
-      touch(entry);
-      touch(list);
       showToast(sub.pinned ? 'Pinned' : 'Unpinned');
       render();
     }
